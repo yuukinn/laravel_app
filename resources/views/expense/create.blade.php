@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <x-layouts.expense-manager>
+        @if ($errors->any())
+            <x-error-messages :errors="$errors" />
+        @endif
+        <div class="container d-flex justify-content-between">
+            <div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="formSelector" value="add_expense_form" checked="checked">
+                    <label class="form-check-label" for="">
+                        支出追加
+                    </label>
+                </div>
+                <div class="form-check">
+                     <input class="form-check-input" type="radio" name="formSelector" value="add_category_form">
+                    <label class="form-check-label" for="">
+                        カテゴリ追加
+                    </label>
+                </div>
+            </div>
+            
+            <div class="container">
+                 <a class="btn btn-primary" href="{{ route('expense.index') }}">一覧へ</a>
+            </div>
+        </div>
+        <form id="add_expense_form" name="add_expense_form" class="container-md" action='{{ route("expense.detail.store") }}' method='POST'>
+            <h3>支出追加</h3>
+            @csrf
+            <div>
+                <label class="form-label" for='category'>カテゴリ</label>
+                <select class="form-select" name="category_id" id="category">
+                    @foreach ($categories as $category)
+                    <option value="{{ $category->id }}" @if($category->id == old('category_id')) selected @endif>
+                        {{ $category->category }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">詳細</label>
+                <input class="form-control" type="text" name='category_detail' value="{{ old('category_detail') }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">金額</label>
+                <input class="form-control" type="text" name='price' id="price" value="{{ old('price') }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">日付</label>
+                <input class="form-control" type="date" name="date">
+            </div>
+            <div class="mb-3">
+                <div>
+                    <label class="form-label">資産タイプ</label>
+                </div>
+                <label for="investment">投資</label>
+                <input class="form-check-input me-2" type="radio" id="investment" name="asset_type" value="投資">
+
+                 <label class="form-label" for="wastage">浪費</label>
+                 <input class="form-check-input me-2" type="radio" id="wastage" name="asset_type" value="浪費">
+
+                 <label class="form-label" for="consumption">消費</label>
+                 <input class="form-check-input" type="radio" id="consumption" name="asset_type" value="消費">
+            </div>
+            <input type="hidden" value="{{ $userID }}" name="user_id">
+            <input type="reset" value="リセット">
+            <input type="submit" value="追加">
+        </form>
+
+        <form  action="{{ route('expense.store') }}"   method="POST" id="add_category_form" name="add_category_form" class="container visually-hidden text-center">
+            @csrf
+            <h3>カテゴリ追加</h3>
+            <div class="">
+                <label for="">カテゴリ</label>
+                <input type="text" name="category">
+                <input type="reset" value="リセット">
+                <input type="submit" value="追加">
+                <input type="hidden" value="{{ $userID }}" name="user_id">
+            </div>
+        </form>
+       
+    </x-layouts.expense-manager>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            //最初のフォームを表示する
+            document.getElementById('add_expense_form').classList.remove('visually-hidden');
+
+
+            //ラジオボタンの変更時にフォームを切り替える
+            let radios = document.querySelectorAll('input[name="formSelector"]');
+            radios.forEach(function(radio){
+                //chanegeイベントの監視
+                radio.addEventListener('change', function() {
+                //全てのフォームを非表示にする
+                let forms = document.querySelectorAll('form');
+                forms.forEach(function(form){
+                    console.log(form)
+                    form.classList.add('visually-hidden');
+                });
+
+                //選択されたフォームを表示する
+                let selectedFormId = this.value;
+                let selectedForm = document.getElementById(selectedFormId);
+                selectedForm.classList.remove('visually-hidden');
+                });
+            });
+        })
+
+
+</script>
+</body>
+</html>

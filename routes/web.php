@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseCategoryDetailController;
+use App\Http\Controllers\GoalAmountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,11 +45,6 @@ Route::prefix('expense/create')
 Route::post('expense/create/detail', [ExpenseCategoryDetailController::class, 'storeDetail'])
      ->middleware(['auth', 'verified'])
      ->name('expense.detail.store');
-// Route::get('expense/create', [CategoryController::class, 'create'])
-     // ->middleware(['auth', 'verified'])
-     // ->name('create');
-// Route::post('expense/create', [ConvertController::class, 'convert'])
-     // ->name('convert');
 Route::get('expense/index/{type?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
      ->middleware(['auth', 'verified'])
      ->name('expense.index');
@@ -58,3 +54,12 @@ Route::get('expense/download/index', [ExpenseCategoryDetailController::class, 'e
 Route::delete('expense/destroy/{expenseCategoryDetail}', [ExpenseCategoryDetailController::class, 'destroy'])
      ->middleware(['auth', 'verified'])
      ->name('expense.destroy');
+Route::get('goal_amount/index', [GoalAmountController::class, 'index'])
+     ->middleware(['auth', 'verified'])
+     ->name('goal_amount.index');
+Route::post('goal_amount/store', [GoalAmountController::class, 'store'])
+     ->middleware(['auth', 'verified'])
+     ->name('goal_amount.store');
+// Route::get('mail/news', [MailController::class, 'send'])
+//      ->middleware(['auth', 'verified'])
+//      ->name('mail.news');

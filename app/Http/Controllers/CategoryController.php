@@ -16,12 +16,11 @@ class CategoryController extends Controller
         $categories = ExpenseCategory::all();
         
         $user = Auth::user();
-        $userID = $user->id;
         $categories = $user->expenseCategory;
         return view('expense/create', [
             'categories' => $categories,
-            'userID' => $userID,
-        ]);
+            'user' => $user,
+        ]);     
     }
 
     public function store(Request $request):RedirectResponse

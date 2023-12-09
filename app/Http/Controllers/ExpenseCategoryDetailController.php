@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\View\View;
 use App\Http\Requests\ExpensePostRequest;
+use App\Events\ExpenseRegistered;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ExpenseCategoryDetail;
 
@@ -56,8 +57,7 @@ class ExpenseCategoryDetailController extends Controller
             
             default:
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                ->where('user_id', $userID)
-                ->simplePaginate(5);       
+                ->where('user_id', $userID)->simplePaginate(5);
         }
 
         // 資産別計算処理
@@ -70,7 +70,7 @@ class ExpenseCategoryDetailController extends Controller
                 $wasteSum = $wasteSum + $categoryDetail->amount;
             }
         }
-
+     
         return view('expense/index', [
             'categoryDetails' => $categoryDetails,
             'investmentSum' => $investmentSum,
@@ -80,8 +80,10 @@ class ExpenseCategoryDetailController extends Controller
         ]);
     }
 
+    //　支出詳細登録
     public function storeDetail(ExpensePostRequest $request): RedirectResponse
     {
+        $user = Auth::user();
         //Category詳細登録用のオブジェクトを作成する
         $categoryDetail = new ExpenseCategoryDetail();
 
@@ -94,11 +96,18 @@ class ExpenseCategoryDetailController extends Controller
         $categoryDetail->is_investment = $request->asset_type === '投資';
         $categoryDetail->is_consumption = $request->asset_type === '消費';
         $categoryDetail->is_waste = $request->asset_type === '浪費';
-
     
-
         //保存
         $categoryDetail->save();
+
+        if(!$user->has_set_email){
+            // イベントハッカ
+            event(new ExpenseRegistered($categoryDetail));
+
+            // $name = ['name'];
+            // var_dump($name);
+            // exit;
+        }
 
         return redirect(route('expense.index'));
 

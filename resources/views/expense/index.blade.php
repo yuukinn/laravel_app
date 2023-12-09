@@ -8,11 +8,11 @@
 </head>
 <body>
     <x-layouts.expense-manager>
-        <h1>支出一覧</h1>
-        
-        <hr>
         <div class="container">
+            <h1>支出一覧</h1>
+            <hr>
             <a class="btn btn-primary" href="{{ route('expense.create') }}">追加</a>
+            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">目標金額</a>
         </div>
         <div class="container">
             <div class="row d-flex justify-content-around">

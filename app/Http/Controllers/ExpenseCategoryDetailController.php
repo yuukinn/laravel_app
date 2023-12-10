@@ -31,7 +31,7 @@ class ExpenseCategoryDetailController extends Controller
                         ['user_id', $userID],
                         ['is_investment', '=', 1]
                     ])
-                    ->simplePaginate(5);
+                    ->simplePaginate(10);
 
                 break;
             
@@ -41,7 +41,7 @@ class ExpenseCategoryDetailController extends Controller
                         ['user_id', $userID],
                         ['is_consumption', '=', 1]
                     ])
-                    ->simplePaginate(5);
+                    ->simplePaginate(10);
 
                 break;
             
@@ -51,13 +51,13 @@ class ExpenseCategoryDetailController extends Controller
                         ['user_id', $userID],
                         ['is_waste', '=', 1]
                     ])
-                    ->simplePaginate(5);
+                    ->simplePaginate(10);
 
                 break;
             
             default:
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                ->where('user_id', $userID)->simplePaginate(5);
+                ->where('user_id', $userID)->simplePaginate(10);
         }
 
         // 資産別計算処理
@@ -70,7 +70,7 @@ class ExpenseCategoryDetailController extends Controller
                 $wasteSum = $wasteSum + $categoryDetail->amount;
             }
         }
-     
+
         return view('expense/index', [
             'categoryDetails' => $categoryDetails,
             'investmentSum' => $investmentSum,

@@ -48,6 +48,9 @@ Route::post('expense/create/detail', [ExpenseCategoryDetailController::class, 's
 Route::get('expense/index/{type?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
      ->middleware(['auth', 'verified'])
      ->name('expense.index');
+// Route::get('expense/index/{page_id?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
+//      ->middleware(['auth', 'verified'])
+//      ->name('expense.index');
 Route::get('expense/download/index', [ExpenseCategoryDetailController::class, 'exportCsv'])
      ->middleware(['auth', 'verified'])
      ->name('expense.csv');
@@ -60,6 +63,6 @@ Route::get('goal_amount/index', [GoalAmountController::class, 'index'])
 Route::post('goal_amount/store', [GoalAmountController::class, 'store'])
      ->middleware(['auth', 'verified'])
      ->name('goal_amount.store');
-// Route::get('mail/news', [MailController::class, 'send'])
-//      ->middleware(['auth', 'verified'])
-//      ->name('mail.news');
+Route::put('goal_amount/edit/{goalAmounts}', [GoalAmountController::class, 'update'])
+     ->middleware(['auth', 'verified'])
+     ->name('goal_amount.edit');

@@ -100,23 +100,28 @@
                         <form action="{{ route('expense.destroy', $categoryDetail) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <input id="delete_btn" type="submit" value="削除">
+                            <input type="submit" value="削除" class="delete-form">
                         </form>
                     </td>
                 </tr>
             @endforeach
         </table>
-        {{ $categoryDetails->links() }}
     </x-layouts.expense-manager>
     <script>
         document.addEventListener('DOMContentLoaded', function(){
             //削除ボタンの要素取得
-            let deleteButton = document.getElementById('delete_btn');
+            let deleteButtons = document.querySelectorAll('.delete-form');
 
-            deleteButton.addEventListener('click', function(){
-                alert('本当に削除しますか？')
-            })
-        })
+            deleteButtons.forEach(function (deleteButton) {
+                deleteButton.addEventListener('click', function (event) {
+                    // フォームのデフォルトの送信を防ぐ
+                    event.preventDefault();
+                    if (confirm('本当に削除しますか？')){
+                        this.submit();
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>

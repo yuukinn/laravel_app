@@ -19,8 +19,8 @@ class GoalAmountController extends Controller
             $goalAmounts = GoalAmount::where('user_id', $userID)->firstOrFail();
 
             return view('goal_amount/index', [
+                'goalAmounts' => $goalAmounts,
                 'goalAmount' => $goalAmounts->goal_amount,
-                'goalDate' => $goalAmounts->goal_date
             ]);
         } catch (ModelNotFoundException $e){
 
@@ -48,4 +48,19 @@ class GoalAmountController extends Controller
         return redirect(route('goal_amount.index'));
 
     }
+
+    public function update(Request $request, GoalAmount $goalAmounts):RedirectResponse
+    {
+        $user = Auth::user();
+        $userID = $user->id;
+        //　リクエストオブジェクトからパラメーターを取得する
+        $goalAmounts->user_id = $userID;
+        $goalAmounts->goal_amount = $request->goal_amount;
+        $goalAmounts->goal_date = $request->goal_date;
+
+        $goalAmounts->update();
+
+        return redirect(route('expense.index'))
+            ->with('message', '目標金額を変更しました。');
+    }   
 }

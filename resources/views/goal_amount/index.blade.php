@@ -8,6 +8,7 @@
 </head>
 <body>
     <x-layouts.expense-manager>
+        @if($goalAmount == 0 )
         <div class="container  bg-info rounded-top w-25 ">
             <h2>目標金額</h2>
             <h3>{{ $goalAmount }}円</h3>
@@ -32,6 +33,25 @@
                 </form>
             </div>
         </div>
+        @else
+        <div class="container  bg-info rounded-top w-25 ">
+            <h2>目標金額設定</h2>
+            <div>
+                <a href="{{ route('expense.index') }}" class="btn btn-primary">一覧へ</a>
+            </div>
+            <form action="{{ route('goal_amount.edit', $goalAmounts) }}" method="POST" class="p-3">
+                @csrf
+                @method('PUT')
+                <div>
+                    <input type="date" name="goal_date" class="form-control mb-3" value="{{ $goalAmounts->goal_date }}">
+                </div>
+                <div>
+                    <input type="number" name="goal_amount" class="form-control mb-3" value="{{ $goalAmounts->goal_amount }}">
+                </div>
+                <input type="submit" value="編集" class="btn btn-primary">
+            </form>
+        </div>
+        @endif
     </x-layouts.expense-manager>
 </body>
 </html>

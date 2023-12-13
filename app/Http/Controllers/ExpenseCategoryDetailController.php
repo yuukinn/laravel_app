@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-//use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\View\View;
 use App\Http\Requests\ExpensePostRequest;
@@ -31,8 +31,10 @@ class ExpenseCategoryDetailController extends Controller
                         ['user_id', $userID],
                         ['is_investment', '=', 1]
                     ])
-                    ->simplePaginate(10);
+                    ->get();
 
+                // データの件数を取得
+                $totalCount = $categoryDetails->count();
                 break;
             
             case 'cons.';
@@ -41,23 +43,29 @@ class ExpenseCategoryDetailController extends Controller
                         ['user_id', $userID],
                         ['is_consumption', '=', 1]
                     ])
-                    ->simplePaginate(10);
+                    ->get();
 
+                // データの件数を取得
+                $totalCount = $categoryDetails->count();
                 break;
-            
+
             case 'waste';
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
                     ->where([
                         ['user_id', $userID],
                         ['is_waste', '=', 1]
                     ])
-                    ->simplePaginate(10);
+                    ->get();
 
+                // データの件数を取得
+                $totalCount = $categoryDetails->count();
                 break;
             
             default:
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                ->where('user_id', $userID)->simplePaginate(10);
+                ->where('user_id', $userID)->get();
+                // データの件数を取得
+                $totalCount = $categoryDetails->count();
         }
 
         // 資産別計算処理
@@ -103,10 +111,6 @@ class ExpenseCategoryDetailController extends Controller
         if(!$user->has_set_email){
             // イベントハッカ
             event(new ExpenseRegistered($categoryDetail));
-
-            // $name = ['name'];
-            // var_dump($name);
-            // exit;
         }
 
         return redirect(route('expense.index'));

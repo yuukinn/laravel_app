@@ -53,7 +53,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">金額</label>
-                    <input class="form-control" type="text" name='price' id="price" value="{{ old('price') }}">
+                    <input class="form-control" type="number" name='price' id="price" value="{{ old('price') }}">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">日付</label>

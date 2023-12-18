@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\ExpenseCategory;
 use App\Models\ExpenseCategoryUser;
+use App\Http\Requests\CategoryPostRequest;
+use App\Http\Controllers\RedirectResponse;
 
 
 class CategoryController extends Controller
@@ -24,9 +26,8 @@ class CategoryController extends Controller
         ]);     
     }
 
-    public function store(Request $request):RedirectResponse
+    public function store(CategoryPostRequest $request):RedirectResponse
     {   
-        $user = Auth::user();
         //カテゴリ登録用のオブジェクトを用意
         $expensecategory = new ExpenseCategory();
         
@@ -39,7 +40,7 @@ class CategoryController extends Controller
         if ($existenceCategory) {
                 //カテゴリユーザーテーブル(中間テーブル)を登録
                 ExpenseCategoryUser::create([
-                    'user_id' => $user->id,
+                    'user_id' => $request->user_id,
                     'expense_category_id' => $categoryId,
                 ]);
 

@@ -84,8 +84,8 @@
                 <div class="">
                     <label for="">カテゴリ</label>
                     <input type="text" name="category">
-                    <input type="reset" value="リセット">
-                    <input type="submit" value="追加">
+                    <input type="reset"class="btn btn-warning" value="リセット">
+                    <input type="submit" class="btn btn-primary" value="追加">
                     <input type="hidden" value="{{ $user->id }}" name="user_id">
                 </div>
             </form>

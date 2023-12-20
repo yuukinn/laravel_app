@@ -8,6 +8,11 @@
 </head>
 <body>
     <x-layouts.expense-manager>
+        <div class="container-md w-50 mt-5 text-center">
+            @if ($errors->any())
+                <x-error-messages :errors="$errors"/>
+            @endif
+        </div>
         @if($goalAmount == 0 )
         <div class="container  bg-info rounded-top w-25 ">
             <h2>目標金額</h2>

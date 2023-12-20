@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\GoalAmount;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\GoalAmountRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 class GoalAmountController extends Controller
 {
     public function index(): View
@@ -49,7 +51,7 @@ class GoalAmountController extends Controller
 
     }
 
-    public function update(Request $request, GoalAmount $goalAmounts):RedirectResponse
+    public function update(GoalAmountRequest $request, GoalAmount $goalAmounts):RedirectResponse
     {
         $user = Auth::user();
         $userID = $user->id;

@@ -11,8 +11,8 @@
         <div class="container">
             <h1>支出一覧</h1>
             <hr>
-            <a class="btn btn-primary" href="{{ route('expense.create') }}">追加</a>
-            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">目標金額</a>
+            <a class="btn btn-primary me-3" href="{{ route('expense.create') }}">支出追加</a>
+            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">目標金額設定</a>
         </div>
         <div class="container">
             <div class="row d-flex justify-content-around">
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="d-flex justify-content-between">
                 <form action="{{ route('expense.index')}}" method="GET">
                     @csrf
                     <input type="hidden" name="type">
@@ -74,7 +74,7 @@
             </div>
         @endif
 
-        <table class="table table-hover container-md">
+        <table class="table table-hover container-md mt-3">
             <tr>
                 <th>カテゴリ名</th>
                 <th>詳細</th>
@@ -117,7 +117,7 @@
                     // フォームのデフォルトの送信を防ぐ
                     event.preventDefault();
                     if (confirm('本当に削除しますか？')){
-                        this.submit();
+                        this.('form')submit();
                     }
                 });
             });

@@ -1,5 +1,5 @@
 <div class="text-danger">
-    <ul>
+    <ul class="list-unstyled">
         @foreach($errors->all() as $error)
             <li>{{ $error}}</li>
         @endforeach

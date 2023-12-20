@@ -137,7 +137,7 @@ class ExpenseCategoryDetailController extends Controller
         $type = request('asset_type');
 
         //ファイルの名前作成
-        $fileName = Carbon::now()->format('YmdHis').'expense_list';
+        $fileName = Carbon::now()->format('YmdHis').'expense_list.csv';
 
         $callBack = function () use($type, $userID)
         {   

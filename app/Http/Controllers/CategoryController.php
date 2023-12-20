@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ExpenseCategory;
 use App\Models\ExpenseCategoryUser;
 use App\Http\Requests\CategoryPostRequest;
-use App\Http\Controllers\RedirectResponse;
+use Illuminate\Http\RedirectResponse;
 
 
 class CategoryController extends Controller
@@ -37,6 +37,19 @@ class CategoryController extends Controller
         $existenceCategory = ExpenseCategory::where('category', $request->category)->get();
         $categoryId = $existenceCategory->first()->id;
 
+
+        // 中間テーブルの重複チェック
+        $existingEntry = ExpenseCategoryUser::where([
+            'user_id' => $request->user_id,
+            'expense_category_id' => $categoryId,
+        ])
+        ->first();
+        if($existingEntry){
+            return redirect(route('expense.create'))
+            ->with('message', 'すでに追加しています。');
+        }
+        
+        // カテゴリが存在している場合
         if ($existenceCategory) {
                 //カテゴリユーザーテーブル(中間テーブル)を登録
                 ExpenseCategoryUser::create([

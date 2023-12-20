@@ -11,13 +11,10 @@
 <body>
     <x-layouts.expense-manager>
         <div class="container-md w-50 mt-5">
-            @if ($errors->any())
-                <x-error-messages :errors="$errors" />
-            @endif
             <div class="d-flex justify-content-between">
                 <div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="formSelector" value="add_expense_form" checked="checked">
+                        <input class="form-check-input" type="radio" name="formSelector" value="add_expense_form" >
                         <label class="form-check-label" for="">
                             支出追加
                         </label>
@@ -33,7 +30,12 @@
                      <a class="btn btn-primary" href="{{ route('expense.index') }}">一覧へ</a>
                 </div>
             </div>
-
+            <div class="container-md w-50 mt-5 mb-4 text-center">
+                @if ($errors->any() || session('message'))
+                    <x-error-messages :errors="$errors" />
+                    {{session('message')}}
+                @endif
+            </div>
             <form id="add_expense_form" name="add_expense_form" class="mt-4" action='{{ route("expense.detail.store") }}' method='POST'>
                 <h3>支出追加</h3>
                 @csrf
@@ -50,18 +52,19 @@
                 <div class="mb-3">
                     <label class="form-label">詳細</label>
                     <input class="form-control" type="text" name='category_detail' value="{{ old('category_detail') }}">
+                    <span class="text-secondary">※30文字以下まで登録可能です。</span>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">金額</label>
+                    <label class="form-label"><span class="text-danger">※</span>金額</label>
                     <input class="form-control" type="number" name='price' id="price" value="{{ old('price') }}">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">日付</label>
+                    <label class="form-label"><span class="text-danger">※</span>日付</label>
                     <input class="form-control" type="date" name="date">
                 </div>
                 <div class="mb-3">
                     <div>
-                        <label class="form-label">資産タイプ</label>
+                        <label class="form-label"><span class="text-danger">※</span>資産タイプ</label>
                     </div>
                     <label class="form-label" for="consumption">消費</label>
                     <input class="form-check-input me-2" type="radio" id="consumption" name="asset_type" value="消費">
@@ -94,26 +97,42 @@
     <script>
 
         document.addEventListener('DOMContentLoaded', function () {
-            //最初のフォームを表示する
-            document.getElementById('add_expense_form').classList.remove('visually-hidden');
 
+            // ページが読み込まれた時にセッションストレージから選択されたフォームIDを取得
+            let selectedFormId = sessionStorage.getItem('selectedFormId');
+
+            // 全てのフォームを非表示にする
+            let forms = document.querySelectorAll('form');
+            forms.forEach(function(form){
+                form.classList.add('visually-hidden');
+            });
+
+            // 選択されたフォームがある場合は表示する
+            if (selectedFormId){
+                let selectedForm = document.getElementById(selectedFormId);
+                selectedForm.classList.remove('visually-hidden');
+            }
 
             //ラジオボタンの変更時にフォームを切り替える
             let radios = document.querySelectorAll('input[name="formSelector"]');
-            radios.forEach(function(radio){
+            radios.forEach(function(radio){;
+
                 //chanegeイベントの監視
                 radio.addEventListener('change', function() {
-                //全てのフォームを非表示にする
-                let forms = document.querySelectorAll('form');
-                forms.forEach(function(form){
-                    console.log(form)
-                    form.classList.add('visually-hidden');
-                });
 
-                //選択されたフォームを表示する
-                let selectedFormId = this.value;
-                let selectedForm = document.getElementById(selectedFormId);
-                selectedForm.classList.remove('visually-hidden');
+                     //全てのフォームを非表示にする
+                    let forms = document.querySelectorAll('form');
+                    forms.forEach(function(form){
+                        form.classList.add('visually-hidden');
+                    });
+
+                    //選択されたフォームを表示する
+                    let selectedFormId = this.value;
+                    let selectedForm = document.getElementById(selectedFormId);
+                    selectedForm.classList.remove('visually-hidden');
+
+                    // 選択されたフォームのIDをセッションストレージに保存
+                    sessionStorage.setItem('selectedFormId', selectedFormId);
                 });
             });
         })

@@ -14,7 +14,7 @@
             <div class="d-flex justify-content-between">
                 <div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="formSelector" value="add_expense_form" >
+                        <input class="form-check-input" type="radio" name="formSelector" value="add_expense_form">
                         <label class="form-check-label" for="">
                             支出追加
                         </label>

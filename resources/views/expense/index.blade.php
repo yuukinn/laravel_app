@@ -69,7 +69,7 @@
             </div>
         </div>
         @if(session('message'))
-            <div class="">
+            <div class="container text-center mt-3 mb-3">
                 {{ session('message') }}
             </div>
         @endif
@@ -117,8 +117,8 @@
                     // フォームのデフォルトの送信を防ぐ
                     event.preventDefault();
                     if (confirm('本当に削除しますか？')){
-                        this.('form')submit();
-                    }
+                        this.closest('form').submit();
+                    };
                 });
             });
         });

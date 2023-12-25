@@ -10,7 +10,7 @@
 </head>
 <body>
     <x-layouts.expense-manager>
-        <div class="container-md w-50 mt-5">
+        <div class="container w-75 mt-4">
             <div class="d-flex justify-content-between">
                 <div>
                     <div class="form-check">
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div>
-                     <a class="btn btn-primary" href="{{ route('expense.index') }}">一覧へ</a>
+                     <a class="btn bg-opacity-50 bg-secondary" href="{{ route('expense.index') }}">一覧へ</a>
                 </div>
             </div>
             <div class="container-md w-50 mt-5 mb-4 text-center">
@@ -52,7 +52,7 @@
                 <div class="mb-3">
                     <label class="form-label">詳細</label>
                     <input class="form-control" type="text" name='category_detail' value="{{ old('category_detail') }}">
-                    <span class="text-secondary">※30文字以下まで登録可能です。</span>
+                    <span class="small text-danger">※30文字以下まで登録可能です。</span>
                 </div>
                 <div class="mb-3">
                     <label class="form-label"><span class="text-danger">※</span>金額</label>
@@ -87,8 +87,8 @@
                 <div class="">
                     <label for="">カテゴリ</label>
                     <input type="text" name="category">
-                    <input type="reset"class="btn btn-warning" value="リセット">
                     <input type="submit" class="btn btn-primary" value="追加">
+                    <input type="reset"class="btn btn-warning" value="リセット">
                     <input type="hidden" value="{{ $user->id }}" name="user_id">
                 </div>
             </form>

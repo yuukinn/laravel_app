@@ -25,9 +25,9 @@ class ExpenseCategoryDetailController extends Controller
 
         // 年月日を取得
         $currentDate = Carbon::now();
-        $startOfMonth = $currentDate->copy()->startOfMonth();
-        $endOfMonth = $currentDate->copy()->endOfMonth();
-        $yearMonth = $startOfMonth->copy()->format('Y-m');
+        $startOfMonth = $currentDate->copy()->startOfMonth()->format('Y-m-d');
+        $endOfMonth = $currentDate->copy()->endOfMonth()->format('Y-m-d');
+        $yearMonth = $currentDate->copy()->format('Y-m');
         // var_dump($startOfMonth . " " . $endOfMonth);
         // ログインユーザー
         $user = Auth::user();
@@ -92,8 +92,7 @@ class ExpenseCategoryDetailController extends Controller
                 // $date_type = "date_asc";
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
                     ->where([
-                        ['user_id', $userID],
-                        ['date', $yearMonthDate]
+                        ['user_id', $userID]
                     ])
                     ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('created_at', 'desc')
@@ -124,8 +123,7 @@ class ExpenseCategoryDetailController extends Controller
                 // var_dump($amount_type);
                 // exit;
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                    ->where(
-                        ['user_id', $userID],)
+                    ->where('user_id', $userID)
                     ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('amount', 'desc')
                     ->paginate(4);

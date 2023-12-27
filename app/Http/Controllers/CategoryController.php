@@ -9,6 +9,7 @@ use App\Models\ExpenseCategory;
 use App\Models\ExpenseCategoryUser;
 use App\Http\Requests\CategoryPostRequest;
 use Illuminate\Http\RedirectResponse;
+use Carbon\Carbon;
 
 
 class CategoryController extends Controller
@@ -17,12 +18,16 @@ class CategoryController extends Controller
     public function create(): View
     {
         $categories = ExpenseCategory::all();
-        
+
+        $currentDate = Carbon::now();
+        $currentDateFormatted = $currentDate->format('Y-m-d');
+
         $user = Auth::user();
         $categories = $user->expenseCategory;
         return view('expense/create', [
             'categories' => $categories,
             'user' => $user,
+            'currentDateFormatted' => $currentDateFormatted,
         ]);     
     }
 

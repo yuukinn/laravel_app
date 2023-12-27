@@ -30,7 +30,7 @@
                      <a class="btn bg-opacity-50 bg-secondary" href="{{ route('expense.index') }}">一覧へ</a>
                 </div>
             </div>
-            <div class="container-md w-50 mt-5 mb-4 text-center">
+            <div class="container-md w-80 mt-5 mb-4 text-center">
                 @if ($errors->any() || session('message'))
                     <x-error-messages :errors="$errors" />
                     {{session('message')}}
@@ -60,20 +60,20 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label"><span class="text-danger">※</span>日付</label>
-                    <input class="form-control" type="date" name="date">
+                    <input class="form-control" type="date" name="date" id="date" value="{{ old('date')?? $currentDateFormatted}}">
                 </div>
                 <div class="mb-3">
                     <div>
                         <label class="form-label"><span class="text-danger">※</span>資産タイプ</label>
                     </div>
                     <label class="form-label" for="consumption">消費</label>
-                    <input class="form-check-input me-2" type="radio" id="consumption" name="asset_type" value="消費">
+                    <input class="form-check-input me-2" type="radio" id="consumption" name="asset_type" value="消費" {{ old('asset_type') === "消費" ? "checked" : '' }}>
 
                     <label class="form-label" for="wastage">浪費</label>
-                    <input class="form-check-input me-2" type="radio" id="wastage" name="asset_type" value="浪費">
+                    <input class="form-check-input me-2" type="radio" id="wastage" name="asset_type" value="浪費" {{ old('asset_type') === "浪費" ? "checked" : ''}}>
 
                     <label for="investment">投資</label>
-                    <input class="form-check-input me-2" type="radio" id="investment" name="asset_type" value="投資">
+                    <input class="form-check-input me-2" type="radio" id="investment" name="asset_type" value="投資" {{ old('asset_type') === "投資" ? "checked" : '' }}>
 
                 </div>
                 <input type="hidden" value="{{ $user->id }}" name="user_id">

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\ExpenseCategoryDetail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 
 class ExpenseCategoryDetailController extends Controller
 {
@@ -23,18 +24,11 @@ class ExpenseCategoryDetailController extends Controller
         // exit;
 
         // 年月日を取得
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
-        $yearMonth = $startOfMonth->format('Y-m');
-
-        // 資産計算用:初期値
-        // $investmentSum = 0;
-        // $consumptionSum = 0;
-        // $wasteSum = 0;
-        // $sum = 0;
-
-        // var_dump($type);
-        // exit;
+        $currentDate = Carbon::now();
+        $startOfMonth = $currentDate->copy()->startOfMonth();
+        $endOfMonth = $currentDate->copy()->endOfMonth();
+        $yearMonth = $startOfMonth->copy()->format('Y-m');
+        // var_dump($startOfMonth . " " . $endOfMonth);
         // ログインユーザー
         $user = Auth::user();
         $userID = $user->id;
@@ -86,6 +80,7 @@ class ExpenseCategoryDetailController extends Controller
                     ->where([
                         ['user_id', $userID],
                     ])
+                    ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('created_at', 'asc')
                     ->paginate(4);
 
@@ -98,7 +93,9 @@ class ExpenseCategoryDetailController extends Controller
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
                     ->where([
                         ['user_id', $userID],
+                        ['date', $yearMonthDate]
                     ])
+                    ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('created_at', 'desc')
                     ->paginate(4);
 
@@ -114,8 +111,9 @@ class ExpenseCategoryDetailController extends Controller
                     ->where([
                         ['user_id', $userID],
                     ])
+                    ->whereBetween('date', [$startOfMonth, $endOfMonth])// var_dump($startOfMonth . " " . $endOfMonth);
                     ->orderBy('amount', 'asc')
-                    ->paginate(4);;
+                    ->paginate(4);
 
                 // データの件数を取得
                 // $totalCount = $categoryDetails->count();
@@ -126,9 +124,8 @@ class ExpenseCategoryDetailController extends Controller
                 // var_dump($amount_type);
                 // exit;
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                    ->where([
-                        ['user_id', $userID],
-                    ])
+                    ->where(
+                        ['user_id', $userID],)
                     ->orderBy('amount', 'desc')
                     ->paginate(4);
 
@@ -139,6 +136,7 @@ class ExpenseCategoryDetailController extends Controller
             default:
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
                 ->where('user_id', $userID)
+                ->whereBetween('date', [$startOfMonth, $endOfMonth])
                 ->orderBy('created_at', 'desc')
                 ->paginate(4);
                 // データの件数を取得
@@ -197,6 +195,8 @@ class ExpenseCategoryDetailController extends Controller
     //　支出詳細登録
     public function storeDetail(ExpensePostRequest $request): RedirectResponse
     {
+        // 開始時間を取得
+        $startTime = microtime(true);
         $user = Auth::user();
         //Category詳細登録用のオブジェクトを作成する
         $categoryDetail = new ExpenseCategoryDetail();
@@ -213,12 +213,18 @@ class ExpenseCategoryDetailController extends Controller
     
         //保存
         $categoryDetail->save();
+        // 終了時間を取得
+        $endTime = microtime(true);
+ 
+        // // Log::info('デバッグ情報: ' . $debugInfo);
+        // if(!$user->has_set_email){
+        //     // イベントハッカ
+        //     event(new ExpenseRegistered($categoryDetail));
+        // }
 
-        if(!$user->has_set_email){
-            // イベントハッカ
-            event(new ExpenseRegistered($categoryDetail));
-        }
-
+        // 処理時間を計算（ミリ秒単位でログに記録）
+        $executionTime = round(($endTime - $startTime) * 1000, 2);
+        Log::info('処理時間: ' . $executionTime . 'ms');
         return redirect(route('expense.index'));
 
     }

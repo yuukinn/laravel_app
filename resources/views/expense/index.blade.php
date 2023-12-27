@@ -22,10 +22,10 @@
                 <a class="btn btn-primary me-1" href="{{ route('expense.create') }}">支出追加</a>
             </div>
             <div class="d-flex justify-content-end">
-                <form action="{{ route('expense.index', ['type' => $date_type]) }}" method="GET" class="input-group mb-3 container d-flex justify-content-end">
+                <form action="{{ route('expense.index', ['type' => $date_type]) }}" method="GET" class="input-group mb-3 container d-flex justify-content-end p-0">
                     <button class="btn btn-outline-secondary" type="submit" name="type" id="date" value="date_asc">日付</button>
                 </form>
-                <form action="{{ route('expense.index', ['type' => $amount_type]) }}" method="GET" class="input-group mb-3 container d-flex justify-content-end">
+                <form action="{{ route('expense.index', ['type' => $amount_type]) }}" method="GET" class="input-group mb-3 container d-flex justify-content-end p-0">
                     <button class="btn btn-outline-secondary" type="submit" name="type" id="amount" value="amount_asc">金額</button>
                 </form>
             </div>
@@ -125,15 +125,12 @@
             // const amountButton = document.getElementById('amount');
 
             // dateButton.addEventListener('click', function () {
-            //     // event.preventDefault();
             //     // 日付けボタンが押下された場合
-            //     // this.value = (this.value == 'date_asc') ? 'date_desc' : 'date_asc';
+            //     console.log(this.innerText);
             //     this.innerText = (this.innerText == '日付：昇順') ? '日付：降順' : '日付：昇順';
             // });
 
             // amountButton.addEventListener('click', function () {
-            //     // event.preventDefault();
-            //     // this.value = (this.value == 'amount_asc') ? 'amount_desc' : 'amount_asc';
             //     console.log(this.innerText)
             //     this.innerText = (this.innerText == '金額：昇順') ? '金額：降順' : '金額：昇順';
             // });

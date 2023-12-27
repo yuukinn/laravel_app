@@ -126,6 +126,7 @@ class ExpenseCategoryDetailController extends Controller
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
                     ->where(
                         ['user_id', $userID],)
+                    ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('amount', 'desc')
                     ->paginate(4);
 

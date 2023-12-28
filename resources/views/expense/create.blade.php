@@ -126,7 +126,7 @@
             let savedTabId = localStorage.getItem('selectedTabId');
             
             // 初回の場合や保存されたタブIDが見つからない場合はデフォルトのタブを表示する
-            if (!savedFormId && savedTabId) {
+            if (!savedFormId && !savedTabId) {
                 savedFormId = "add_expense_form";
                 savedTabId = "expense_tab";
             }

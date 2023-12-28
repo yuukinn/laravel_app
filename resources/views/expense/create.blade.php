@@ -11,25 +11,14 @@
 <body>
     <x-layouts.expense-manager>
         <div class="container w-75 mt-4">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="formSelector" value="add_expense_form">
-                        <label class="form-check-label" for="">
-                            支出追加
-                        </label>
-                    </div>
-                    <div class="form-check">
-                         <input class="form-check-input" type="radio" name="formSelector" value="add_category_form">
-                        <label class="form-check-label" for="">
-                            カテゴリ追加
-                        </label>
-                    </div>
-                </div>
-                <div>
-                     <a class="btn bg-opacity-50 bg-secondary" href="{{ route('expense.index') }}">一覧へ</a>
-                </div>
-            </div>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active text-reset" id="expense_tab" data-tab-id="add_expense_form" aria-current="page">支出追加</a>
+                </li >
+                <li class="nav-item">
+                    <a class="nav-link text-reset" id="category_tab" data-tab-id="add_category_form">カテゴリ追加</a>
+                </li>
+            </ul>
             <div class="container-md w-80 mt-5 mb-4 text-center">
                 @if ($errors->any() || session('message'))
                     <x-error-messages :errors="$errors" />
@@ -37,7 +26,12 @@
                 @endif
             </div>
             <form id="add_expense_form" name="add_expense_form" class="mt-4" action='{{ route("expense.detail.store") }}' method='POST'>
-                <h3>支出追加</h3>
+                <div class="d-flex justify-content-between">
+                    <h3>支出追加</h3>
+                    <div>
+                        <a href="{{ route('expense.index') }}" class="btn bg-opacity-50 bg-secondary">一覧へ</a>
+                    </div>
+                </div>
                 @csrf
                 <div class="mb-3">
                     <label class="form-label" for='category'>カテゴリ</label>
@@ -81,80 +75,105 @@
                 <input type="reset" value="リセット" class="btn btn-warning">
                 <input type="submit" value="追加" class="btn btn-primary">
             </form>
-            <form  action="{{ route('expense.store') }}"   method="POST" id="add_category_form" name="add_category_form" class="container visually-hidden text-center">
+            <form  action="{{ route('expense.store') }}"   method="POST" id="add_category_form" name="add_category_form" class="container  text-center">
                 @csrf
                 <h3>カテゴリ追加</h3>
-                <div class="">
-                    <label for="">カテゴリ</label>
+                <div class="mt-5">
                     <input type="text" name="category">
-                    <input type="submit" class="btn btn-primary" value="追加">
-                    <input type="reset"class="btn btn-warning" value="リセット">
+                    <div class="mt-5 d-flex justify-content-between">
+                        <div>
+                            <input type="submit" class="btn btn-primary" value="追加">
+                        </div>
+                        <div>
+                            <input type="reset"class="btn btn-warning" value="リセット">
+                        </div>
+                    </div>
                     <input type="hidden" value="{{ $user->id }}" name="user_id">
+                </div>
+                <div class="mt-5 text-start">
+                    <a href="{{ route('expense.index') }}" class="btn bg-opacity-50 bg-secondary">一覧へ</a>
                 </div>
             </form>
         </div>
     </x-layouts.expense-manager>
+    <footer class="footer py-3 bg-opacity-50 bg-primary mt-4">
+    <div class="container d-flex justify-content-around">
+        <div>
+            <a class="btn btn-primary" href="{{ route('expense.create') }}">支出追加</a>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">目標金額設定</a>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">レポート</a>
+        </div>
+    </div>
+</footer>
     <script>
-
         document.addEventListener('DOMContentLoaded', function () {
 
-            // ページが読み込まれた時にセッションストレージから選択されたフォームIDを取得
-            let selectedFormId = sessionStorage.getItem('selectedFormId');
-
-            // 全てのフォームを非表示にする
-            let forms = document.querySelectorAll('form');
-            forms.forEach(function(form){
-                form.classList.add('visually-hidden');
-            });
-
-            // 選択されたフォームがある場合は表示する
-            if (selectedFormId){
-                let selectedForm = document.getElementById(selectedFormId);
-                selectedForm.classList.remove('visually-hidden');
-            }
-
-            //ラジオボタンの変更時にフォームを切り替える
-            let radios = document.querySelectorAll('input[name="formSelector"]');
-            radios.forEach(function(radio){;
-
-                //chanegeイベントの監視
-                radio.addEventListener('change', function() {
-
-                     //全てのフォームを非表示にする
-                    let forms = document.querySelectorAll('form');
-                    forms.forEach(function(form){
-                        form.classList.add('visually-hidden');
-                    });
-
-                    //選択されたフォームを表示する
-                    let selectedFormId = this.value;
-                    let selectedForm = document.getElementById(selectedFormId);
-                    selectedForm.classList.remove('visually-hidden');
-
-                    // 選択されたフォームのIDをセッションストレージに保存
-                    sessionStorage.setItem('selectedFormId', selectedFormId);
+            let tabLinks = document.querySelectorAll('.nav-link');
+            tabLinks.forEach(function(tabLink) {
+                tabLink.addEventListener('click', function(e) {
+                    let formId = this.getAttribute('data-tab-id');
+                    let tabId = this.id
+                    activateTab(tabId);
+                    showForm(formId);
                 });
             });
-        })
-    
-        // $(document).ready(function() {
-        //     $("#price").blur(function () {
-        //         charChange($(this));
-        //     });
+            // ローカルストレージから保存されたタブIDを取得
+            let savedFormId = localStorage.getItem('selectedFormId');
+            let savedTabId = localStorage.getItem('selectedTabId');
             
-        //     charChange = function(e) {
-        //         let val = e.val();
-        //         let han = val.replace(/[0-9]/g, function(s){
-        //             return String.fromCharCode(s.charCodeAt(0)-65248)
-        //         });
+            // 初回の場合や保存されたタブIDが見つからない場合はデフォルトのタブを表示する
+            if (!savedFormId && savedTabId) {
+                savedFormId = "add_expense_form";
+                savedTabId = "expense_tab";
+            }
 
-        //         if(val.match(/[0-9]/g)){
-        //             $(e).val(han);
-        //         }
-        //     }
+            activateTab(savedTabId);
+            showForm(savedFormId);
+        })
 
-        // });
+        function activateTab(tabId){
+            // 全てのタブを非active状態にする
+            let tabs = document.querySelectorAll('.nav-link');
+            tabs.forEach(function(tab){
+                // console.log(tab);
+                tab.classList.remove('active', 'bg-secondary', 'bg-opacity-50');
+                tab.removeAttribute('aria-current');
+            });
 
+            // 選択されたタブをactive状態に
+            let selectedTab = document.getElementById(tabId);
+            console.log(tabId);
+            if(selectedTab) {
+                selectedTab.classList.add('active', 'bg-secondary', 'bg-opacity-50');
+                selectedTab.setAttribute('aria-current', 'page');
+
+                // 選択されたタブIDをローカルストレージに保存
+                localStorage.setItem('selectedTabId', tabId);
+            }
+        }
+    
+        function showForm(formId) {
+            //全てのタブコンテンツを非表示にする
+            let formContents = document.querySelectorAll('form');
+            formContents.forEach(function(form) {
+                form.classList.add('d-none');
+            });
+
+            // 選択されたタブコンテンツを表示する
+            let selectedForm = document.getElementById(formId);
+            if (selectedForm) {
+                selectedForm.classList.remove('d-none');
+
+                // 選択されたタブIDをローカルストレージに保存
+                localStorage.setItem('selectedFormId', formId);
+            }
+
+       
+    }  
 </script>
 </body>
 </html>

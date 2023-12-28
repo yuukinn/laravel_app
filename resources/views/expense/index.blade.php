@@ -105,6 +105,19 @@
         </div>
 
     </x-layouts.expense-manager>
+    <footer class="footer py-3 bg-opacity-50 bg-primary mt-4">
+    <div class="container d-flex justify-content-around">
+        <div>
+            <a class="btn btn-primary" href="{{ route('expense.create') }}">支出追加</a>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">目標金額設定</a>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">レポート</a>
+        </div>
+    </div>
+</footer>
     <script>
         window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
         document.addEventListener('DOMContentLoaded', function(){

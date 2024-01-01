@@ -23,7 +23,7 @@ class CategoryPostRequest extends FormRequest
     {
         return [
             //
-            'category' => 'required|exists:expense_categories',
+            // 'category' => 'required|exists:expense_categories',
         ];
     }
 }

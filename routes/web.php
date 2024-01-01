@@ -66,3 +66,6 @@ Route::post('goal_amount/store', [GoalAmountController::class, 'store'])
 Route::put('goal_amount/edit/{goalAmounts}', [GoalAmountController::class, 'update'])
      ->middleware(['auth', 'verified'])
      ->name('goal_amount.edit');
+Route::get('report/index', [ExpenseCategoryDetailController::class, 'showReport'])
+     ->middleware(['auth', 'verified'])
+     ->name('report.index');

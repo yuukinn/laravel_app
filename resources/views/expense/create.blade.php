@@ -105,7 +105,7 @@
             <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">目標金額設定</a>
         </div>
         <div>
-            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">レポート</a>
+            <a class="btn btn-primary" href="{{ route('report.index') }}">レポート</a>
         </div>
     </div>
 </footer>

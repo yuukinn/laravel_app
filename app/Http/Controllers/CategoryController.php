@@ -36,13 +36,20 @@ class CategoryController extends Controller
         //カテゴリ登録用のオブジェクトを用意
         $expensecategory = new ExpenseCategory();
         
+
+        
         //リクエストオブジェクトからパラメータを取得
         $expensecategory -> category = $request -> category;
+        // var_dump($expensecategory);
+        // exit;        
 
         $existenceCategory = ExpenseCategory::where('category', $request->category)->get();
-        $categoryId = $existenceCategory->first()->id;
+        $number = count($existenceCategory);
+        if (count($existenceCategory)){
+            $categoryId = $existenceCategory->first()->id;
+        }
 
-
+       
         // 中間テーブルの重複チェック
         $existingEntry = ExpenseCategoryUser::where([
             'user_id' => $request->user_id,

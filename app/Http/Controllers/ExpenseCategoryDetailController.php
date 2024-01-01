@@ -28,7 +28,7 @@ class ExpenseCategoryDetailController extends Controller
         $startOfMonth = $currentDate->copy()->startOfMonth()->format('Y-m-d');
         $endOfMonth = $currentDate->copy()->endOfMonth()->format('Y-m-d');
         $yearMonth = $currentDate->copy()->format('Y-m');
-        // var_dump($startOfMonth . " " . $endOfMonth);
+        
         // ログインユーザー
         $user = Auth::user();
         $userID = $user->id;
@@ -235,103 +235,143 @@ class ExpenseCategoryDetailController extends Controller
         return redirect(route('expense.index'))->with('message', '支出項目を削除しました。');
     }
 
-    public function exportCsv()
+    public function showReport():View
     {
-        //HTTPヘッダーの設定
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment;'
-        ];
+         // 年月日を取得
+        $currentDate = Carbon::now();
+        $startOfMonth = $currentDate->copy()->startOfMonth()->format('Y-m-d');
+        $endOfMonth = $currentDate->copy()->endOfMonth()->format('Y-m-d');
+        $yearMonth = $currentDate->copy()->format('Y-m');
+
+        // ログインユーザー
+        $user = AUth::user();
+        $userId = $user->id;
+
+        $investmentSum = ExpenseCategoryDetail::where([
+            ['user_id', $userId],
+            ['is_investment', 1],
+        ])
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+        $consumptionSum = ExpenseCategoryDetail::where([
+            ['user_id', $userId],
+            ['is_consumption', 1],
+        ])
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+        $wasteSum = ExpenseCategoryDetail::where([
+            ['user_id', $userId],
+            ['is_waste', 1],
+        ])
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
         
-        $user = Auth::user();
-        $userID = $user->id;
-        $type = request('asset_type');
 
-        //ファイルの名前作成
-        $fileName = Carbon::now()->format('YmdHis').'expense_list.csv';
-
-        $callBack = function () use($type, $userID)
-        {   
-            //ストリームを作成してファイルに書き込みができるようにする
-            $stream = fopen('php://output', 'w');
-
-            //ヘッダー行の定義
-            $head = [
-                'カテゴリ名',
-                '詳細',
-                '金額',
-                '資産タイプ',
-                '日付'
-            ];
-
-            //文字化け対策
-            mb_convert_variables('SJIS', 'UTF-8', $head);
-            //ヘッダー書き込み
-            fputcsv($stream, $head);       
-
-            //カテゴリ詳細一覧を取得
-            switch($type) {
-                case "inv.";
-                    $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                        ->where([
-                            ['user_id', $userID],
-                            ['is_investment', '=', 1]
-                        ])
-                        ->orderBy('date', 'asc');
-
-                    break;
-            
-                case 'cons.';
-                    $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                        ->where([
-                            ['user_id', $userID],
-                            ['is_consumption', '=', 1]
-                        ])
-                       ->orderBy('date', 'asc');
-
-                    break;
-            
-                case 'waste';
-                    $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                        ->where([
-                            ['user_id', $userID],
-                            ['is_waste', '=', 1]
-                        ])
-                        ->orderBy('date', 'asc');
-
-                    break;
-            
-                default:
-                    $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                        ->where('user_id', $userID)
-                        ->orderBy('date', 'asc');
-            }
-
-            foreach ($categoryDetails->cursor() as $categoryDetail) {
-                $data = [
-                    $categoryDetail->expenseCategory->category,
-                    $categoryDetail->category_detail,
-                    $categoryDetail->amount,
-                ];   
-
-                // 資産タイプの条件分岐
-                if ($categoryDetail->is_investment) {
-                    $data[] = '投資';
-                } elseif ($categoryDetail->is_consumption) {
-                    $data[] = '消費';
-                } else {
-                    $data[] = '浪費';
-                }
-
-                $data[] =  $categoryDetail->date;
-                //文字化け対策
-                mb_convert_variables('SJIS', 'UTF-8', $data);
-                fputcsv($stream, $data);
-            }
-            fclose($stream);
-        };
-
-        return response()->streamDownload($callBack, $fileName, $headers);
+        return view('report/index', [
+            'yearMonth' => $yearMonth,
+            'investmentSum' => $investmentSum,
+            'consumptionSum' => $consumptionSum,
+            'wasteSum' => $wasteSum,
+        ]);
     }
+
+    // public function exportCsv()
+    // {
+    //     //HTTPヘッダーの設定
+    //     $headers = [
+    //         'Content-Type' => 'text/csv',
+    //         'Content-Disposition' => 'attachment;'
+    //     ];
+        
+    //     $user = Auth::user();
+    //     $userID = $user->id;
+    //     $type = request('asset_type');
+
+    //     //ファイルの名前作成
+    //     $fileName = Carbon::now()->format('YmdHis').'expense_list.csv';
+
+    //     $callBack = function () use($type, $userID)
+    //     {   
+    //         //ストリームを作成してファイルに書き込みができるようにする
+    //         $stream = fopen('php://output', 'w');
+
+    //         //ヘッダー行の定義
+    //         $head = [
+    //             'カテゴリ名',
+    //             '詳細',
+    //             '金額',
+    //             '資産タイプ',
+    //             '日付'
+    //         ];
+
+    //         //文字化け対策
+    //         mb_convert_variables('SJIS', 'UTF-8', $head);
+    //         //ヘッダー書き込み
+    //         fputcsv($stream, $head);       
+
+    //         //カテゴリ詳細一覧を取得
+    //         switch($type) {
+    //             case "inv.";
+    //                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
+    //                     ->where([
+    //                         ['user_id', $userID],
+    //                         ['is_investment', '=', 1]
+    //                     ])
+    //                     ->orderBy('date', 'asc');
+
+    //                 break;
+            
+    //             case 'cons.';
+    //                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
+    //                     ->where([
+    //                         ['user_id', $userID],
+    //                         ['is_consumption', '=', 1]
+    //                     ])
+    //                    ->orderBy('date', 'asc');
+
+    //                 break;
+            
+    //             case 'waste';
+    //                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
+    //                     ->where([
+    //                         ['user_id', $userID],
+    //                         ['is_waste', '=', 1]
+    //                     ])
+    //                     ->orderBy('date', 'asc');
+
+    //                 break;
+            
+    //             default:
+    //                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
+    //                     ->where('user_id', $userID)
+    //                     ->orderBy('date', 'asc');
+    //         }
+
+    //         foreach ($categoryDetails->cursor() as $categoryDetail) {
+    //             $data = [
+    //                 $categoryDetail->expenseCategory->category,
+    //                 $categoryDetail->category_detail,
+    //                 $categoryDetail->amount,
+    //             ];   
+
+    //             // 資産タイプの条件分岐
+    //             if ($categoryDetail->is_investment) {
+    //                 $data[] = '投資';
+    //             } elseif ($categoryDetail->is_consumption) {
+    //                 $data[] = '消費';
+    //             } else {
+    //                 $data[] = '浪費';
+    //             }
+
+    //             $data[] =  $categoryDetail->date;
+    //             //文字化け対策
+    //             mb_convert_variables('SJIS', 'UTF-8', $data);
+    //             fputcsv($stream, $data);
+    //         }
+    //         fclose($stream);
+    //     };
+
+    //     return response()->streamDownload($callBack, $fileName, $headers);
+    // }
     
 }

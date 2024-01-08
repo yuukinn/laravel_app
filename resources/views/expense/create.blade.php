@@ -116,7 +116,7 @@
             tabLinks.forEach(function(tabLink) {
                 tabLink.addEventListener('click', function(e) {
                     let formId = this.getAttribute('data-tab-id');
-                    let tabId = this.id
+                    let tabId = this.id;
                     activateTab(tabId);
                     showForm(formId);
                 });

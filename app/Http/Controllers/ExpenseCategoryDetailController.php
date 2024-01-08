@@ -9,6 +9,7 @@ use App\Http\Requests\ExpensePostRequest;
 use App\Events\ExpenseRegistered;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ExpenseCategoryDetail;
+use App\Models\ExpenseCategory;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
@@ -235,6 +236,7 @@ class ExpenseCategoryDetailController extends Controller
         return redirect(route('expense.index'))->with('message', '支出項目を削除しました。');
     }
 
+    // レポート出力
     public function showReport():View
     {
          // 年月日を取得
@@ -266,12 +268,39 @@ class ExpenseCategoryDetailController extends Controller
             ->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->sum('amount');
         
+        
+        // $categoryTotals = ExpenseCategory::withSum('categoryDetails', 'amount')
+        //     ->join('expense_category_details', 'expense_categories.id', '=', 'expense_category_details.category_id')
+        //     ->where('expense_category_details.user_id', $userId)
+        //     ->whereBetween('date', [$startOfMonth, $endOfMonth])
+        //     ->groupBy('expense_categories.category')
+        //     ->get();
+
+        $categoryTotals = ExpenseCategory::withSum(['categoryDetails' => function ($query) use ($userId, $startOfMonth, $endOfMonth) {
+            $query->where('user_id', $userId)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth]);
+        }], 'amount')
+        ->get();
+
+        // var_dump($categoryTotals[0]['category_details_sum_amount']);
+        // exit;
+
+        $categoryList = [];
+        $amountList = [];
+
+        foreach($categoryTotals as $categoryTotal) {
+            array_push($categoryList, $categoryTotal['category']);
+            array_push($amountList, $categoryTotal['category_details_sum_amount']);
+        }
 
         return view('report/index', [
             'yearMonth' => $yearMonth,
             'investmentSum' => $investmentSum,
             'consumptionSum' => $consumptionSum,
             'wasteSum' => $wasteSum,
+            'categoryList' => $categoryList,
+            'amountList' => $amountList,
+            'categoryTotals' => $categoryTotals,
         ]);
     }
 

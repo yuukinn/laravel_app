@@ -13,7 +13,7 @@ class ExpenseCategory extends Model
 
     public function categoryDetails(): HasMany
     {
-        return $this->hasMany(ExpenseCategoryDetail::class);
+        return $this->hasMany(ExpenseCategoryDetail::class, 'category_id');
     }
     
     public function users(): BelongsToMany

@@ -9,44 +9,56 @@
 </head>
 <body>
     <x-layouts.expense-manager>
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs w-75 mt-4 container">
             <li class="nav-item">
-                <a class="nav-link active text-reset" id="asset_tab" data-tab-id="asset_category_tab" aria-current="page">支出追加</a>
+                <a class="nav-link active text-reset" id="asset_tab" data-tab-id="asset_category_tab" aria-current="page">資産別</a>
             </li >
             <li class="nav-item">
-                <a class="nav-link text-reset" id="category_tab" data-tab-id="categories_tab">カテゴリ追加</a>
+                <a class="nav-link text-reset" id="category_tab" data-tab-id="categories_tab">カテゴリ別</a>
             </li>
         </ul>
         <h2 class="text-center mt-4">{{\Carbon\Carbon::createFromFormat('Y-m', $yearMonth)->format('Y年m月')}}</h2>
 
-        <section id="asset_category_tab">
-            <div class="container" style="width:80%;">
+        <section id="asset_category_tab" name="asset_category_tab">
+            <div class="container mb-3" style="width:80%;">
                 <canvas id="assetChart"></canvas>
             </div>
             
             <div class="container mt-3">
-                <p>投資：{{ $investmentSum }}円</p>
-                <p>消費：{{ $consumptionSum }}円</p>
-                <p>浪費：{{ $wasteSum }}円</p>
+                <div class="row">
+                    <div class="col-4" >
+                        <h5>投資</h5>
+                        <p>{{ $investmentSum }}円</p>
+                    </div>
+                    <div class="col-4" >
+                        <h5>消費</h5>
+                        <p>{{ $consumptionSum }}円</p>
+                    </div>
+                    <div class="col-4" >
+                        <h5>浪費</h5>
+                        <p>{{ $wasteSum }}円</p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section id="categories_tab">
-            <div class="container-fluid" style="width:80%;">
+        <section id="categories_tab" name="categories_tab">
+            <div class="container-fluid" style="width:80; height:200px">
                 <canvas id="categoryChart"></canvas>
             </div>
 
-            <!-- <div class="container mt-3">
-                <ul>
+            <div class="container mt-4">
+                <div class="row">
                 @foreach($categoryTotals as $categoryTotal)
-                @if($categoryTotal['category_details_sum_amount'])
-                    <li>{{$categoryTotal['category'].":".$categoryTotal['category_details_sum_amount']}}円</li>
-                @else
-                    <li>{{$categoryTotal['category'].":0"}}円</li>
-                @endif
+                    <div class="col-4 p-1 mb-3">
+                        <div class="category-info  bg-light rounded">
+                    <h5>{{$categoryTotal['category']}}</h5>
+                    <p>{{$categoryTotal['category_details_sum_amount'] ? $categoryTotal['category_details_sum_amount'] : '0'}}円</p>
+                </div>
+                    </div>
                 @endforeach
-                </ul>
-            </div> -->
+                </div>
+            </div>
         </section>
 
         

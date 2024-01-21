@@ -10,6 +10,7 @@ use App\Events\ExpenseRegistered;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ExpenseCategoryDetail;
 use App\Models\ExpenseCategory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
@@ -301,6 +302,32 @@ class ExpenseCategoryDetailController extends Controller
             'categoryList' => $categoryList,
             'amountList' => $amountList,
             'categoryTotals' => $categoryTotals,
+        ]);
+    }
+
+    public function renderCalendar(Request $request):View
+    {   
+
+        $user = Auth::user();
+        $userId = $user->id;
+
+        $year = $request->input('year');
+        $month = $request->input('month');
+
+        $yearMonth = $year . '-' . $month;
+
+        $amounts = ExpenseCategoryDetail::select('date', DB::raw('SUM(amount) as date_amount'))
+            ->where([
+                ['user_id', $userId],
+                ['date', 'LIKE', $year . '-' . $month . '%'],
+            ])
+            ->groupBy('date')
+            ->get();
+
+        // var_dump($year);
+        // exit;
+        return view('expense/calendar',[
+            'amounts' => $amounts,
         ]);
     }
 

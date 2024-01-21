@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> -->
+    <link rel="stylesheet" href="/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <title>Document</title>
 </head>
@@ -13,10 +15,10 @@
         <div class="container w-75 mt-4">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active text-reset" id="expense_tab" data-tab-id="add_expense_form" aria-current="page">支出追加</a>
+                    <a class="nav-link active tab-color" id="expense_tab" data-tab-id="add_expense_form" aria-current="page">支出追加</a>
                 </li >
                 <li class="nav-item">
-                    <a class="nav-link text-reset" id="category_tab" data-tab-id="add_category_form">カテゴリ追加</a>
+                    <a class="nav-link " id="category_tab" data-tab-id="add_category_form">カテゴリ追加</a>
                 </li>
             </ul>
             <div class="container-md w-80 mt-5 mb-4 text-center">
@@ -56,37 +58,39 @@
                     <label class="form-label"><span class="text-danger">※</span>日付</label>
                     <input class="form-control" type="date" name="date" id="date" value="{{ old('date')?? $currentDateFormatted}}">
                 </div>
-                <div class="mb-3">
+                <div class="mb-5">
                     <div>
                         <label class="form-label"><span class="text-danger">※</span>資産タイプ</label>
                     </div>
-                    <label class="form-label" for="consumption">消費</label>
                     <input class="form-check-input me-2" type="radio" id="consumption" name="asset_type" value="消費" {{ old('asset_type') === "消費" ? "checked" : '' }}>
+                    <label class="form-label me-4" for="consumption">消費</label>
 
-                    <label class="form-label" for="wastage">浪費</label>
                     <input class="form-check-input me-2" type="radio" id="wastage" name="asset_type" value="浪費" {{ old('asset_type') === "浪費" ? "checked" : ''}}>
+                    <label class="form-label me-4" for="wastage">浪費</label>
 
-                    <label for="investment">投資</label>
                     <input class="form-check-input me-2" type="radio" id="investment" name="asset_type" value="投資" {{ old('asset_type') === "投資" ? "checked" : '' }}>
+                    <label for="investment">投資</label>
 
                 </div>
                 <input type="hidden" value="{{ $user->id }}" name="user_id">
                 <input type="hidden" value="{{ $user->has_set_email }}" name="email_flag">
-                <input type="reset" value="リセット" class="btn btn-warning">
-                <input type="submit" value="追加" class="btn btn-primary">
+                <div class="d-grid gap-2 mx-auto my-4">
+                    <input type="submit" value="支出追加" id="add-btn" class="btn btn-lg rounded-pill border-0">
+                </div>
+                <div class="d-grid gap-2 mx-auto">
+                    <input type="reset" value="リセット" class="btn btn-lg rounded-pill" id="reset-btn">
+                </div>
             </form>
             <form  action="{{ route('expense.store') }}"   method="POST" id="add_category_form" name="add_category_form" class="container  text-center">
                 @csrf
                 <h3>カテゴリ追加</h3>
-                <div class="mt-5">
-                    <input type="text" name="category">
-                    <div class="mt-5 d-flex justify-content-between">
-                        <div>
-                            <input type="submit" class="btn btn-primary" value="追加">
-                        </div>
-                        <div>
-                            <input type="reset"class="btn btn-warning" value="リセット">
-                        </div>
+                <div class="mt-5 mb-5">
+                    <input type="text" name="category" class="form-control mb-5">
+                    <div class="d-grid gap-2 mx-auto my-4">
+                        <input type="submit" value="カテゴリ追加" id="add-btn" class="btn btn-lg rounded-pill border-0">
+                    </div>
+                    <div class="d-grid gap-2 mx-auto">
+                        <input type="reset" value="リセット" class="btn btn-lg rounded-pill" id="reset-btn">
                     </div>
                     <input type="hidden" value="{{ $user->id }}" name="user_id">
                 </div>
@@ -96,7 +100,7 @@
             </form>
         </div>
     </x-layouts.expense-manager>
-    <footer class="footer py-3 bg-opacity-50 bg-primary mt-4">
+    <footer class="footer py-3 mt-4">
     <div class="container d-flex justify-content-around">
         <div>
             <a class="btn btn-primary" href="{{ route('expense.create') }}">支出追加</a>
@@ -140,15 +144,14 @@
             let tabs = document.querySelectorAll('.nav-link');
             tabs.forEach(function(tab){
                 // console.log(tab);
-                tab.classList.remove('active', 'bg-secondary', 'bg-opacity-50');
+                tab.classList.remove('active', 'tab-color', 'text-white');
                 tab.removeAttribute('aria-current');
             });
 
             // 選択されたタブをactive状態に
             let selectedTab = document.getElementById(tabId);
-            console.log(tabId);
             if(selectedTab) {
-                selectedTab.classList.add('active', 'bg-secondary', 'bg-opacity-50');
+                selectedTab.classList.add('active', 'tab-color', 'text-white');
                 selectedTab.setAttribute('aria-current', 'page');
 
                 // 選択されたタブIDをローカルストレージに保存

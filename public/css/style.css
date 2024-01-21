@@ -1,0 +1,36 @@
+#add-btn {
+    background-color: #f28d35;   
+    color: white;
+}
+
+#add-btn:hover {
+    opacity: 0.8;
+}
+
+.add-expnese-btn {
+    background-color: #f28d35;   
+    color: white;
+}
+
+.add-expnese-btn:hover {
+    opacity: 0.9;
+}
+
+#reset-btn {
+    border:1px solid #f28d35;
+}
+
+.tab-color {
+    background-color: #f28d35 !important;
+}
+
+/* footer */
+footer {
+    background-color: #f28d35; 
+    opacity: 0.8;
+}
+
+.header {
+    background-color: #f28d35; 
+    opacity: 0.8;
+}

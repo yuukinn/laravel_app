@@ -48,6 +48,9 @@ Route::post('expense/create/detail', [ExpenseCategoryDetailController::class, 's
 Route::get('expense/index/{type?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
      ->middleware(['auth', 'verified'])
      ->name('expense.index');
+Route::get('expense/calendar', [ExpenseCategoryDetailController::class, 'renderCalendar'])
+     ->middleware(['auth', 'verified'])
+     ->name('expense.calendar');
 // Route::get('expense/index/{page_id?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
 //      ->middleware(['auth', 'verified'])
 //      ->name('expense.index');

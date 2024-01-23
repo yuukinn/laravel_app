@@ -10,7 +10,7 @@
 <body class="d-flex flex-column min-vh-100">
 <nav class="navbar d-flex justify-content-between header">
   <div class="col-md-3 ms-2">
-    <span class="navbar-brand mb-0 h1 fw-bold">家計簿</span>
+    <span class="navbar-brand mb-0 h1 fw-bold header-text">家計簿</span>
   </div>
   <div class="col-md-3 text-end">
     <form action="{{ route('logout')}}" method="POST">

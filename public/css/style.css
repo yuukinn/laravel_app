@@ -9,6 +9,7 @@
 
 .add-expnese-btn {
     background-color: #f28d35;   
+    border:1px solid #f28d35;
     color: white;
 }
 
@@ -26,11 +27,15 @@
 
 /* footer */
 footer {
-    background-color: #f28d35; 
+    background-color: #e7e7e7; 
     opacity: 0.8;
 }
 
 .header {
-    background-color: #f28d35; 
+    background-color: #e7e7e7; 
     opacity: 0.8;
+}
+
+.header-text {
+    color: #f28d35;
 }

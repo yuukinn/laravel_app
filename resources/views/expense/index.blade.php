@@ -11,7 +11,7 @@
 </head>
 <body>
     <x-layouts.expense-manager>
-        <div class="d-flex justify-content-center my-2 bg-info">
+        <div class="d-flex justify-content-center my-2">
             <h3>支出金額
                 {{ number_format($sum) }}円
             </h3>

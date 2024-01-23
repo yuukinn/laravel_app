@@ -14,11 +14,11 @@
     <x-layouts.expense-manager>
         <div class="container w-75 mt-4">
             <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active tab-color" id="expense_tab" data-tab-id="add_expense_form" aria-current="page">支出追加</a>
+                <li class="nav-ite">
+                    <a class="nav-link active tab-color text-black" id="expense_tab" data-tab-id="add_expense_form" aria-current="page">支出追加</a>
                 </li >
                 <li class="nav-item">
-                    <a class="nav-link " id="category_tab" data-tab-id="add_category_form">カテゴリ追加</a>
+                    <a class="nav-link text-black" id="category_tab" data-tab-id="add_category_form">カテゴリ追加</a>
                 </li>
             </ul>
             <div class="container-md w-80 mt-5 mb-4 text-center">

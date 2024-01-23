@@ -15,7 +15,7 @@
   <div class="col-md-3 text-end">
     <form action="{{ route('logout')}}" method="POST">
         @csrf
-        <input type="submit" class="btn btn-outline-primary me-2" value="log out">
+        <input type="submit" class="btn me-2" id="logout-btn" value="log out">
     </form> 
   </div> 
 </nav>

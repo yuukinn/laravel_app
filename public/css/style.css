@@ -21,6 +21,16 @@
     border:1px solid #f28d35;
 }
 
+#logout-btn {
+    background-color: #f28d35;   
+    border:1px solid #f28d35;
+    color: white;
+}
+
+#logout-btn:hover {
+    opacity: 0.8;
+}
+
 .tab-color {
     background-color: #f28d35 !important;
 }

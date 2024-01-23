@@ -58,13 +58,13 @@
     <footer class="footer py-3 mt-4">
     <div class="container d-flex justify-content-around">
         <div>
-            <a class="btn btn-primary" href="{{ route('expense.create') }}">支出追加</a>
+            <a class="btn add-expnese-btn" href="{{ route('expense.create') }}">支出追加</a>
         </div>
         <div>
-            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">目標金額設定</a>
+            <a class="btn add-expnese-btn" href="{{ route('goal_amount.index') }}">目標金額設定</a>
         </div>
         <div>
-            <a class="btn btn-primary" href="{{ route('report.index') }}">レポート</a>
+            <a class="btn add-expnese-btn" href="{{ route('report.index') }}">レポート</a>
         </div>
     </div>
 </footer>

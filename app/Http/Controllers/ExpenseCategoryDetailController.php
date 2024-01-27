@@ -109,7 +109,7 @@ class ExpenseCategoryDetailController extends Controller
                     ])
                     ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('created_at', 'asc')
-                    ->paginate(4);
+                    ->paginate(10);
 
                 break;
 
@@ -120,7 +120,7 @@ class ExpenseCategoryDetailController extends Controller
                     ])
                     ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('created_at', 'desc')
-                    ->paginate(4);
+                    ->paginate(10);
                 break; 
 
             case 'amount_asc';
@@ -131,7 +131,7 @@ class ExpenseCategoryDetailController extends Controller
                     ])
                     ->whereBetween('date', [$startOfMonth, $endOfMonth])// var_dump($startOfMonth . " " . $endOfMonth);
                     ->orderBy('amount', 'asc')
-                    ->paginate(4);
+                    ->paginate(10);
                 break;
 
             case 'amount_desc';
@@ -140,7 +140,7 @@ class ExpenseCategoryDetailController extends Controller
                     ->where('user_id', $userID)
                     ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('amount', 'desc')
-                    ->paginate(4);
+                    ->paginate(10);
                 break;
             
             default:
@@ -148,7 +148,7 @@ class ExpenseCategoryDetailController extends Controller
                 ->where('user_id', $userID)
                 ->whereBetween('date', [$startOfMonth, $endOfMonth])
                 ->orderBy('created_at', 'desc')
-                ->paginate(4);
+                ->paginate(10);
         }
 
         $sum = ExpenseCategoryDetail::where('user_id', $userID)->sum('amount');
@@ -247,6 +247,11 @@ class ExpenseCategoryDetailController extends Controller
             ->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->sum('amount');
         
+        $totalSum = ExpenseCategoryDetail::where([
+            ['user_id', $userId],
+        ])
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
         
         // $categoryTotals = ExpenseCategory::withSum('categoryDetails', 'amount')
         //     ->join('expense_category_details', 'expense_categories.id', '=', 'expense_category_details.category_id')
@@ -272,6 +277,8 @@ class ExpenseCategoryDetailController extends Controller
             array_push($amountList, $categoryTotal['category_details_sum_amount']);
         }
 
+        //％
+
         return view('report/index', [
             'yearMonth' => $yearMonth,
             'investmentSum' => $investmentSum,
@@ -280,6 +287,7 @@ class ExpenseCategoryDetailController extends Controller
             'categoryList' => $categoryList,
             'amountList' => $amountList,
             'categoryTotals' => $categoryTotals,
+            'totalSum' => $totalSum,
         ]);
     }
 

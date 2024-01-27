@@ -13,7 +13,7 @@
 </head>
 <body>
     <x-layouts.expense-manager>
-        <div class="container w-75 mt-4">
+        <div class="container w-80 mt-4">
             <ul class="nav nav-tabs">
                 <li class="nav-ite">
                     <a class="nav-link active tab-color text-black" id="expense_tab" data-tab-id="add_expense_form" aria-current="page">支出追加</a>
@@ -22,13 +22,13 @@
                     <a class="nav-link text-black" id="category_tab" data-tab-id="add_category_form">カテゴリ追加</a>
                 </li>
             </ul>
-            <div class="container-md w-80 mt-5 mb-4 text-center">
+            <div class="container-md w-80 mt-5 mb-3 text-center">
                 @if ($errors->any() || session('message'))
                     <x-error-messages :errors="$errors" />
                     {{session('message')}}
                 @endif
             </div>
-            <form id="add_expense_form" name="add_expense_form" class="mt-4" action='{{ route("expense.detail.store") }}' method='POST'>
+            <form id="add_expense_form" name="add_expense_form" class="mt-3" action='{{ route("expense.detail.store") }}' method='POST'>
                 <div class="d-flex justify-content-between">
                     <h3>支出追加</h3>
                 </div>
@@ -56,7 +56,7 @@
                     <label class="form-label"><span class="text-danger">※</span>日付</label>
                     <input class="form-control" type="date" name="date" id="date" value="{{ old('date')?? $currentDateFormatted}}">
                 </div>
-                <div class="mb-5">
+                <div class="mb-3">
                     <div>
                         <label class="form-label"><span class="text-danger">※</span>資産タイプ</label>
                     </div>
@@ -72,7 +72,7 @@
                 </div>
                 <input type="hidden" value="{{ $user->id }}" name="user_id">
                 <input type="hidden" value="{{ $user->has_set_email }}" name="email_flag">
-                <div class="d-grid gap-2 mx-auto my-4">
+                <div class="d-grid gap-2 mx-auto my-3">
                     <input type="submit" value="支出追加" id="add-btn" class="btn btn-lg rounded-pill border-0">
                 </div>
                 <div class="d-grid gap-2 mx-auto">

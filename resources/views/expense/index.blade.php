@@ -24,10 +24,7 @@
             {{ \Carbon\Carbon::createFromFormat('Y-m', $yearMonth)->format('Y年m月') }}
             <a href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'next']) }}">>></a>
         </h3>
-        <div class="d-flex justify-content-between mt-4">
-            <div class="">
-                <a class="btn me-1 add-expnese-btn" href="{{ route('expense.create') }}">支出追加</a>
-            </div>
+        <div class="d-flex justify-content-end mt-4">
             <div class="d-flex justify-content-end">
                 <form action="{{ route('expense.index', ['type' => $date_type]) }}" method="GET" class="input-group mb-3 container d-flex justify-content-end p-0">
                     <button class="btn btn-outline-secondary" type="submit" name="type" id="date" value="date_asc">日付</button>

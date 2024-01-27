@@ -19,26 +19,30 @@
       </form> 
     </div> 
   </nav>
-    <main class="flex-grow-1 container mb-5">
+    <main class="flex-grow-1 container mb-5 pb-5">
         {{ $slot }}
     </main>
-    <footer class="footer py-2 mt-5 fixed-bottom">
+    <footer class="footer mt-5 fixed-bottom py-2">
       <div class="container d-flex justify-content-around">
-          <div>
-             <a class="" href="{{ route('expense.index') }}"><i class="bi bi-house fs-1 icon"></i></a><br>
-             <p class="mb-0">ホーム</p>
+          <div class="text-center">
+             <a class="text-decoration-none" href="{{ route('expense.index') }}"><i class="bi bi-house fs-1 icon"></i>
+             <p class="mb-0 text-black">ホーム</p>
+            </a>
           </div>
-          <div>
-              <a class="" href="{{ route('expense.create') }}"><i class="bi bi-plus-lg fs-1 icon"></i></a>
-              <p class="mb-0">新規追加</p>
+          <div class="text-center">
+              <a class="text-decoration-none" href="{{ route('expense.create') }}"><i class="bi bi-plus-lg fs-1 icon text-center"></i>
+              <p class="mb-0 text-black">新規追加</p>
+            </a>
           </div>
-          <div>
-              <a class="" href="{{ route('goal_amount.index') }}"><i class="bi bi-bullseye fs-1 icon"></i></a>
-              <p class="mb-0">目標金額設定</p>
+          <div class="text-center">
+              <a class="text-decoration-none" href="{{ route('goal_amount.index') }}"><i class="bi bi-bullseye fs-1 icon"></i>
+              <p class="mb-0 text-black">目標設定</p>
+            </a>
           </div>
-          <div>
-              <a class="" href="{{ route('report.index') }}"><i class="bi bi-pie-chart-fill fs-1 icon"></i></a>
-              <p class="mb-0">分析</p>
+          <div class="text-center">
+              <a class="text-decoration-none" href="{{ route('report.index') }}"><i class="bi bi-pie-chart-fill fs-1 icon"></i>
+              <p class="mb-0 text-black">分析</p>
+            </a>
           </div>
         </div>
     </footer>

@@ -10,12 +10,12 @@
 </head>
 <body>
     <x-layouts.expense-manager>
-        <ul class="nav nav-tabs w-75 mt-4 container">
+        <ul class="nav nav-tabs w-80 mt-4 container">
             <li class="nav-item">
-                <a class="nav-link active text-reset" id="asset_tab" data-tab-id="asset_category_tab" aria-current="page">資産別</a>
+                <a class="nav-link active tab-color text-black" id="asset_tab" data-tab-id="asset_category_tab" aria-current="page">資産別</a>
             </li >
             <li class="nav-item">
-                <a class="nav-link text-reset" id="category_tab" data-tab-id="categories_tab">カテゴリ別</a>
+                <a class="nav-link text-black" id="category_tab" data-tab-id="categories_tab">カテゴリ別</a>
             </li>
         </ul>
         <h2 class="text-center mt-4">{{\Carbon\Carbon::createFromFormat('Y-m', $yearMonth)->format('Y年m月')}}</h2>
@@ -197,14 +197,14 @@
             // すべてのタブを非active状態にする
             let tabs = document.querySelectorAll('.nav-link');
             tabs.forEach(function(tab) {
-                tab.classList.remove('active', 'bg-secondary', 'bg-opacity-50');
+                tab.classList.remove('active', 'tab-color', 'text-white');
                 tab.removeAttribute('aria-current');
             });
 
             // 選択されたタブをactive状態にする
             let selectedTab = document.getElementById(tabId)
             if(selectedTab) {
-                selectedTab.classList.add('active', 'bg-secondary', 'bg-opacity-50');
+                selectedTab.classList.add('active', 'tab-color', 'text-white');
 
                 // 選択されたタブIDをローカルストレージに保存
                 localStorage.setItem('selectedTabId', tabId);

@@ -9,7 +9,7 @@
 </head>
 <body>
     <x-layouts.expense-manager>
-        <div class="container-md w-75 mt-5 text-center">
+        <div class="container-md w-80 mt-5 text-center">
             @if ($errors->any())
                 <x-error-messages :errors="$errors"/>
             @endif

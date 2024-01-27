@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <title>Document</title>
 </head>
@@ -19,6 +20,8 @@
         <p>{{ $amounts }}</p>
     </div>
     <script>
+        const amounts = @json($amounts);
+        console.log(amounts);  
         // 曜日の配列を作成
         const weeks = ['日','月', '火', '水', '木', '金', '土'];
 
@@ -68,13 +71,16 @@
                 if (startOfMonth.getDay() == 0) {
                     calendarHtml += '</tr><tr>'
                 }
+                console.log(amounts[0]['date']);
+                console.log(new Date(amounts[0]['date']).getDate());
+                // console.log(startOfMonth.getDate());
                 // 今日の日付の場合、緑にする
                 if (startOfMonth.getDate() == dt.getDate()){
-                    calendarHtml += '<td class="bg-success">' + i + '</td>';
+                    calendarHtml += '<td class="bg-success">' + startOfMonth.getDate() + '</td>';
                 }else {
-                    calendarHtml += '<td>' + i + '</td>';
+                    calendarHtml += '<td class="">' + startOfMonth.getDate() + '</td>';
+                    // calendarHtml += '<td>' + i + '<br><span>' + "￥200" + '</span>' + '</td>';
                 }
-
                 startOfMonth.setDate(startOfMonth.getDate() + 1);
             }
 
@@ -106,19 +112,20 @@
                 }
             }
             // Ajaxリクエスト送信
-            fetch('/expense/calendar/?year=' + year + '&month=' + month, {
+            const url = '/expense/calendar/?year=' + year + '&month=' + month;
+            fetch(url, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             })
-            .then(response => response.json())
+            .then(response => response.text())
             .then(data => {
-                console.log(data);
-
                 showCalendar(year, month);
             });
         }
+
+        
 
 
         document.getElementById('next_month').addEventListener('click', moveCalendar);

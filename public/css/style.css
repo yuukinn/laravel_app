@@ -31,8 +31,29 @@
     opacity: 0.8;
 }
 
+#index-amount {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.consumption-color {
+    background-color: #96a6fb;
+}
+
+.investment-color {
+    background-color: #a3f8b5;
+}
+
+.waste-color {
+    background-color: #faa3b6;
+}
+
 .tab-color {
     background-color: #f28d35 !important;
+}
+
+.icon {
+    color:#f28d35; 
 }
 
 /* footer */

@@ -11,13 +11,19 @@
 </head>
 <body>
     <x-layouts.expense-manager>
-        <div class="d-flex justify-content-center my-2">
-            <h3>支出金額
-                {{ number_format($sum) }}円
-            </h3>
-        </div>
 
-        <h4 class="text-center">{{ \Carbon\Carbon::createFromFormat('Y-m', $yearMonth)->format('Y年m月') }}</h3>
+        <!-- 支出金額 -->
+        <p class="text-center mb-0 mt-3">支出金額</p>
+        <h2 class="text-center">
+            {{ number_format($sum) }}円
+        </h2>
+
+        <!-- 年月 -->
+        <h3 class="text-center">
+            <a href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'pre']) }}"><<</a>
+            {{ \Carbon\Carbon::createFromFormat('Y-m', $yearMonth)->format('Y年m月') }}
+            <a href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'next']) }}">>></a>
+        </h3>
         <div class="d-flex justify-content-between mt-4">
             <div class="">
                 <a class="btn me-1 add-expnese-btn" href="{{ route('expense.create') }}">支出追加</a>
@@ -40,11 +46,11 @@
         @if($categoryDetails->isNotEmpty())
         @foreach($categoryDetails as $categoryDetail)
             @if($categoryDetail->is_investment)
-                <x-expense-category-card :categoryDetail="$categoryDetail" class="bg-success"/>
+                <x-expense-category-card :categoryDetail="$categoryDetail" class="investment-color"/>
             @elseif($categoryDetail->is_consumption)
-                <x-expense-category-card :categoryDetail="$categoryDetail" class="bg-primary"/>
+                <x-expense-category-card :categoryDetail="$categoryDetail" class="consumption-color"/>
             @else
-                <x-expense-category-card :categoryDetail="$categoryDetail" class="bg-danger"/>
+                <x-expense-category-card :categoryDetail="$categoryDetail" class="waste-color"/>
             @endif
         @endforeach
         @else
@@ -55,19 +61,6 @@
         </div>
 
     </x-layouts.expense-manager>
-    <footer class="footer py-3 mt-4">
-    <div class="container d-flex justify-content-around">
-        <div>
-            <a class="btn add-expnese-btn" href="{{ route('expense.create') }}">支出追加</a>
-        </div>
-        <div>
-            <a class="btn add-expnese-btn" href="{{ route('goal_amount.index') }}">目標金額設定</a>
-        </div>
-        <div>
-            <a class="btn add-expnese-btn" href="{{ route('report.index') }}">レポート</a>
-        </div>
-    </div>
-</footer>
     <script>
         window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
         document.addEventListener('DOMContentLoaded', function(){

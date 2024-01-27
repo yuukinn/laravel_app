@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta namep="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.css" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
@@ -58,18 +59,5 @@
             </div>
         @endif
     </x-layouts.expense-manager>
-    <footer class="footer py-3 bg-opacity-50 bg-primary mt-4">
-    <div class="container d-flex justify-content-around">
-        <div>
-            <a class="btn btn-primary" href="{{ route('expense.create') }}">支出追加</a>
-        </div>
-        <div>
-            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">目標金額設定</a>
-        </div>
-        <div>
-            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">レポート</a>
-        </div>
-    </div>
-</footer>
 </body>
 </html>

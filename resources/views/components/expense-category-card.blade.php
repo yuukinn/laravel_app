@@ -1,6 +1,6 @@
 <div class="mb-2">
-    <div class="card card bg-opacity-50 {{ $class }}">
-        <div class="card-header d-flex justify-content-between p-1">
+    <div class="card card">
+        <div class="card-header d-flex justify-content-between p-1 {{ $class }}">
             @if($class == 'bg-success')
                 <p class="mb-0 d-flex align-items-center"><i class="bi bi-graph-up-arrow pe-1" style="font-size: 1.5rem;"></i>{{ $categoryDetail->expenseCategory->category }} </p>
             @elseif($class == 'bg-primary')
@@ -16,7 +16,7 @@
         </div>
         <div class="card-body d-flex justify-content-between p-2">
             <p class="mb-0">{{ $categoryDetail->category_detail}}</p>
-            <p class="mb-0">￥{{ number_format($categoryDetail->amount) }}</p>
+            <p class="mb-0" id="index-amount">￥{{ number_format($categoryDetail->amount) }}</p>
         </div>
         <span class="text-end">{{\Carbon\Carbon::createFromFormat('Y-m-d', $categoryDetail->date)->format('Y年m月d日') }}</span>
     </div>

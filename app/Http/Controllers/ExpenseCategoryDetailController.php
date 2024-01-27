@@ -17,19 +17,51 @@ use Illuminate\Support\Facades\Log;
 
 class ExpenseCategoryDetailController extends Controller
 {
-    public function getCategoryDetails($type=null):View|RedirectResponse
+    public function getCategoryDetails($type=null,$year=null, $month=null, $targetMonth=null):View|RedirectResponse
     {
         $date_type = "date_asc";
         $amount_type = "amount_asc";
-
-        // var_dump($type);
-        // exit;
+        
 
         // 年月日を取得
         $currentDate = Carbon::now();
         $startOfMonth = $currentDate->copy()->startOfMonth()->format('Y-m-d');
         $endOfMonth = $currentDate->copy()->endOfMonth()->format('Y-m-d');
         $yearMonth = $currentDate->copy()->format('Y-m');
+
+        $currentYear = $currentDate->year;
+        $currentMonth = $currentDate->month;
+
+        if($year==null){
+            $year = (string)$currentDate->year;
+        }
+        if($month==null){
+            $month = (string)$currentDate->month;
+        }
+
+        if($targetMonth == 'pre'){
+            $month--;
+
+            if($month < 1) {
+                $year--;
+                $month = 12;
+            }
+            $yearMonth = $year . '-' . $month;
+            $startOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->startOfMonth()->format('Y-m-d');
+            $endOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->endOfMonth()->format('Y-m-d');
+        }
+
+        if($targetMonth == 'next'){
+            $month++;
+            
+            if($month > 12 ){
+                $year++;
+                $month = 1;
+            }
+            $yearMonth = $year . '-' . $month;
+            $startOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->startOfMonth()->format('Y-m-d');
+            $endOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->endOfMonth()->format('Y-m-d');
+        }
         
         // ログインユーザー
         $user = Auth::user();
@@ -45,9 +77,6 @@ class ExpenseCategoryDetailController extends Controller
                     ])
                     ->orderBy('created_at', 'desc')
                     ->paginate(4);
-
-                // データの件数を取得
-                // $totalCount = $categoryDetails->count();
                 break;
             
             case 'cons.';
@@ -59,8 +88,6 @@ class ExpenseCategoryDetailController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->paginate(4);
 
-                // データの件数を取得
-                // $totalCount = $categoryDetails->count();
                 break;
 
             case 'waste';
@@ -72,8 +99,6 @@ class ExpenseCategoryDetailController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->paginate(4);
 
-                // データの件数を取得
-                // $totalCount = $categoryDetails->count();
                 break;
             
             case 'date_asc';
@@ -86,12 +111,9 @@ class ExpenseCategoryDetailController extends Controller
                     ->orderBy('created_at', 'asc')
                     ->paginate(4);
 
-                // データの件数を取得
-                // $totalCount = $categoryDetails->count();
                 break;
 
             case 'date_desc';
-                // $date_type = "date_asc";
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
                     ->where([
                         ['user_id', $userID]
@@ -99,14 +121,9 @@ class ExpenseCategoryDetailController extends Controller
                     ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('created_at', 'desc')
                     ->paginate(4);
-
-                // データの件数を取得
-                // $totalCount = $categoryDetails->count();
                 break; 
 
             case 'amount_asc';
-                // var_dump($type);
-                // exit;
                 $amount_type = "amount_desc";
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
                     ->where([
@@ -115,23 +132,15 @@ class ExpenseCategoryDetailController extends Controller
                     ->whereBetween('date', [$startOfMonth, $endOfMonth])// var_dump($startOfMonth . " " . $endOfMonth);
                     ->orderBy('amount', 'asc')
                     ->paginate(4);
-
-                // データの件数を取得
-                // $totalCount = $categoryDetails->count();
                 break;
 
             case 'amount_desc';
                 $amount_type = "amount_asc";
-                // var_dump($amount_type);
-                // exit;
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
                     ->where('user_id', $userID)
                     ->whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->orderBy('amount', 'desc')
                     ->paginate(4);
-
-                // データの件数を取得
-                // $totalCount = $categoryDetails->count();
                 break;
             
             default:
@@ -140,56 +149,25 @@ class ExpenseCategoryDetailController extends Controller
                 ->whereBetween('date', [$startOfMonth, $endOfMonth])
                 ->orderBy('created_at', 'desc')
                 ->paginate(4);
-                // データの件数を取得
-                // $totalCount = $categor>count();
         }
 
         $sum = ExpenseCategoryDetail::where('user_id', $userID)->sum('amount');
 
-        // 日付
-        // $query = ExpenseCategoryDetail::selectRaw("DISTINCT DATE_FORMAT(date, '%Y-%m') AS year_month");
-        // dd($query->toSql());
-        // exit;
         $year_month_expense_datas = ExpenseCategoryDetail::selectRaw("DISTINCT DATE_FORMAT(date, '%Y-%m') AS `year_month`")
             ->get();
-       
-        // // ページ番号
-        // $page = request()->get('page', 1);
-        // $MAX = 4;
-        // $maxPage = ceil($totalCount/$MAX);
-        // $validator = Validator::make(['page'=> $page], [
-        //     'page' => 'nullable|integer|min:1|max:'. $maxPage,
-        // ]);
-
-        // // GETリクエストのバリデーション
-        // if($validator->fails()){
-        //     return redirect(route('expense.index'));
-        // }
-
-        // $slicedCategoryDetails = $categoryDetails->slice(($page - 1) * $MAX, $MAX);
-
-        // 資産別計算処理
-        // foreach ($categoryDetails as $categoryDetail) {
-        //     $sum = $sum + $categoryDetail->amount;
-            // if ($categoryDetail->is_investment) {
-            //     $investmentSum = $investmentSum + $categoryDetail->amount;    
-            // } else if ($categoryDetail->is_consumption) {
-            //     $consumptionSum = $consumptionSum + $categoryDetail->amount; 
-            // } else {
-            //     $wasteSum = $wasteSum + $categoryDetail->amount;
-            // }
-        // }
 
         return view('expense/index', [
             'categoryDetails' => $categoryDetails,
             'sum' => $sum,
             'userID'=> $userID,
-            // 'maxPage' => $maxPage,
-            // 'page' => $page,
             'yearMonth' => $yearMonth,
             'year_month_expense_datas' => $year_month_expense_datas,
             'date_type' => $date_type,
             'amount_type' => $amount_type,
+            'currentYear' => $currentYear,
+            'currentMonth'=> $currentMonth,
+            'year' => (string)$year,
+            'month' => (string)$month,
         ]);
     }
 
@@ -305,31 +283,56 @@ class ExpenseCategoryDetailController extends Controller
         ]);
     }
 
-    public function renderCalendar(Request $request):View
+    public function renderCalendar(Request $request)
     {   
+
+        $currentDate = Carbon::now();
+        $startOfMonth = $currentDate->copy()->startOfMonth()->format('Y-m-d');
+        $endOfMonth = $currentDate->copy()->endOfMonth()->format('Y-m-d');
+        $yearMonth = $currentDate->copy()->format('Y-m');
 
         $user = Auth::user();
         $userId = $user->id;
 
-        $year = $request->input('year');
-        $month = $request->input('month');
-
-        $yearMonth = $year . '-' . $month;
+        if($request) {
+            $year = $request->input('year');
+            $month = $request->input('month');
+            $yearMonth = $year . '-' . $month;
+        }
 
         $amounts = ExpenseCategoryDetail::select('date', DB::raw('SUM(amount) as date_amount'))
             ->where([
                 ['user_id', $userId],
-                ['date', 'LIKE', $year . '-' . $month . '%'],
+                ['date', 'LIKE', $yearMonth . '%'],
             ])
             ->groupBy('date')
             ->get();
 
-        // var_dump($year);
-        // exit;
         return view('expense/calendar',[
             'amounts' => $amounts,
         ]);
     }
+
+    // public function renderExpenseCalendar(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $userId = $user->id;
+    //     $year = $request->input('year');
+    //     $month = $request->input('month');
+
+    //     $yearMonth = $year . '-' . $month;
+    //     $amounts = ExpenseCategoryDetail::select('date', DB::raw('SUM(amount) as date_amount'))
+    //         ->where([
+    //             ['user_id', $userId],
+    //             ['date', 'LIKE', $year . '-' . $month . '%'],
+    //         ])
+    //         ->groupBy('date')
+    //         ->get();
+        
+    //     return response()->json([
+    //         'amounts' => $amounts,
+    //     ]);
+    // }
 
     // public function exportCsv()
     // {

@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <!-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <title>Document</title>
@@ -30,9 +31,6 @@
             <form id="add_expense_form" name="add_expense_form" class="mt-4" action='{{ route("expense.detail.store") }}' method='POST'>
                 <div class="d-flex justify-content-between">
                     <h3>支出追加</h3>
-                    <div>
-                        <a href="{{ route('expense.index') }}" class="btn bg-opacity-50 bg-secondary">一覧へ</a>
-                    </div>
                 </div>
                 @csrf
                 <div class="mb-3">
@@ -94,25 +92,10 @@
                     </div>
                     <input type="hidden" value="{{ $user->id }}" name="user_id">
                 </div>
-                <div class="mt-5 text-start">
-                    <a href="{{ route('expense.index') }}" class="btn bg-opacity-50 bg-secondary">一覧へ</a>
-                </div>
             </form>
         </div>
     </x-layouts.expense-manager>
-    <footer class="footer py-3 mt-4">
-    <div class="container d-flex justify-content-around">
-        <div>
-            <a class="btn btn-primary" href="{{ route('expense.create') }}">支出追加</a>
-        </div>
-        <div>
-            <a class="btn btn-primary" href="{{ route('goal_amount.index') }}">目標金額設定</a>
-        </div>
-        <div>
-            <a class="btn btn-primary" href="{{ route('report.index') }}">レポート</a>
-        </div>
-    </div>
-</footer>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -174,8 +157,6 @@
                 // 選択されたタブIDをローカルストレージに保存
                 localStorage.setItem('selectedFormId', formId);
             }
-
-       
     }  
 </script>
 </body>

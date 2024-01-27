@@ -45,12 +45,20 @@ Route::prefix('expense/create')
 Route::post('expense/create/detail', [ExpenseCategoryDetailController::class, 'storeDetail'])
      ->middleware(['auth', 'verified'])
      ->name('expense.detail.store');
-Route::get('expense/index/{type?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
+Route::get('expense/index/{type?}/{year?}/{month?}/{targetmonth?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
      ->middleware(['auth', 'verified'])
+     ->where([
+          'type' => 'inv\.|cons\.|waste|date_asc|date_desc|amount_asc|amount_desc',
+          'targetmonth' => 'pre|next',
+          'year' => '\d{4}',
+          'month' => '\d{1,2}',
+      ])
      ->name('expense.index');
 Route::get('expense/calendar', [ExpenseCategoryDetailController::class, 'renderCalendar'])
-     ->middleware(['auth', 'verified'])
      ->name('expense.calendar');
+// Route::get('expense/calendar', [ExpenseCategoryDetailController::class, 'renderExpenseCalendar'])
+//      ->middleware(['auth', 'verified'])
+//      ->name('expense.calendar');
 // Route::get('expense/index/{page_id?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
 //      ->middleware(['auth', 'verified'])
 //      ->name('expense.index');

@@ -19,9 +19,6 @@
             <h2>目標金額</h2>
             <h3>{{ $goalAmount }}円</h3>
             <h3>期間:{{ $goalDate }}</h3>
-            <div>
-                <a href="{{ route('expense.index') }}" class="btn btn-primary">一覧へ</a>
-            </div>
             <div class="pb-4">
                 <form action="{{ route('goal_amount.store') }}" method="POST">
                     @csrf
@@ -33,8 +30,8 @@
                         <label>目標金額</label>
                         <input type="number" name="goal_amount" class="form-control">
                     </div>
-                    <div class="mt-4">
-                        <input type="submit" value="追加" class="btn btn-primary">
+                    <div class="d-grid gap-2 mx-auto my-3 mt-5">
+                        <input type="submit" value="追加" id="add-btn" class="btn btn-lg rounded-pill border-0">
                     </div>
                 </form>
             </div>
@@ -51,12 +48,11 @@
                 <div>
                     <input type="number" name="goal_amount" class="form-control mb-3" value="{{ $goalAmounts->goal_amount }}">
                 </div>
-                <input type="submit" value="編集" class="btn btn-primary">
+                <div class="d-grid gap-2 mx-auto my-3 mt-5">
+                    <input type="submit" value="編集" id="add-btn" class="btn btn-lg rounded-pill border-0">
+                </div>
             </form>
         </div>
-            <div>
-                <a href="{{ route('expense.index') }}" class="btn bg-opacity-50 bg-secondary">一覧へ</a>
-            </div>
         @endif
     </x-layouts.expense-manager>
 </body>

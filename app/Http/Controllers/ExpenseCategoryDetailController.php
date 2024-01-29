@@ -302,7 +302,8 @@ class ExpenseCategoryDetailController extends Controller
         $user = Auth::user();
         $userId = $user->id;
 
-        if($request) {
+        $year = $request->input('year');
+        if($request->input('year') != NULL || $request->input('month') != NULL) {
             $year = $request->input('year');
             $month = $request->input('month');
             $yearMonth = $year . '-' . $month;
@@ -318,6 +319,7 @@ class ExpenseCategoryDetailController extends Controller
 
         return view('expense/calendar',[
             'amounts' => $amounts,
+            'year' => $year,
         ]);
     }
 

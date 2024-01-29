@@ -28,16 +28,16 @@
             <div class="container mt-3">
                 <div class="row">
                     <div class="col-4" >
-                        <h5>投資</h5>
-                        <p>{{ $investmentSum }}円</p>
+                        <h5 style="background-color: rgba(173, 216, 173, 0.8);">投資</h5>
+                        <p style="font-weight: bold;  font-size: 20px;">{{ $investmentSum }}円</p>
                     </div>
                     <div class="col-4" >
-                        <h5>消費</h5>
-                        <p>{{ $consumptionSum }}円</p>
+                        <h5 style="background-color: rgba(166, 192, 221, 0.8);">消費</h5>
+                        <p style="font-weight: bold;  font-size: 20px;">{{ $consumptionSum }}円</p>
                     </div>
                     <div class="col-4" >
-                        <h5>浪費</h5>
-                        <p>{{ $wasteSum }}円</p>
+                        <h5 style="background-color: rgba(232, 168, 160, 0.8);">浪費</h5>
+                        <p style="font-weight: bold;  font-size: 20px;">{{ $wasteSum }}円</p>
                     </div>
                 </div>
             </div>

@@ -20,9 +20,9 @@
 
         <!-- 年月 -->
         <h3 class="text-center">
-            <a href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'pre']) }}"><<</a>
+            <a style="text-decoration:none;" href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'pre']) }}"><<</a>
             {{ \Carbon\Carbon::createFromFormat('Y-m', $yearMonth)->format('Y年m月') }}
-            <a href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'next']) }}">>></a>
+            <a style="text-decoration:none;" href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'next']) }}">>></a>
         </h3>
         <div class="d-flex justify-content-end mt-4">
             <div class="d-flex justify-content-end">

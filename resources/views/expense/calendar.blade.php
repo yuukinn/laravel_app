@@ -21,7 +21,7 @@
     </div>
     <script>
         const amounts = @json($amounts);
-        console.log(amounts);  
+        
         // 曜日の配列を作成
         const weeks = ['日','月', '火', '水', '木', '金', '土'];
 
@@ -71,8 +71,6 @@
                 if (startOfMonth.getDay() == 0) {
                     calendarHtml += '</tr><tr>'
                 }
-                console.log(amounts[0]['date']);
-                console.log(new Date(amounts[0]['date']).getDate());
                 // console.log(startOfMonth.getDate());
                 // 今日の日付の場合、緑にする
                 if (startOfMonth.getDate() == dt.getDate()){
@@ -112,8 +110,7 @@
                 }
             }
             // Ajaxリクエスト送信
-            const url = '/expense/calendar/?year=' + year + '&month=' + month;
-            fetch(url, {
+            fetch('{{ route("expense.calendar") }}?year=' + year + '&month=' + month, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -121,6 +118,8 @@
             })
             .then(response => response.text())
             .then(data => {
+                let getYear = data.year;
+                console.log(getYear); 
                 showCalendar(year, month);
             });
         }

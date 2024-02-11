@@ -55,8 +55,10 @@ Route::get('expense/index/{type?}/{year?}/{month?}/{targetmonth?}', [ExpenseCate
       ])
      ->name('expense.index');
 Route::get('expense/calendar', [ExpenseCategoryDetailController::class, 'renderCalendar'])
+     ->middleware(['auth', 'verified'])
      ->name('expense.calendar');
 Route::get('expense/calendar/detail', [ExpenseCategoryDetailController::class, 'getCalendar'])
+     ->middleware(['auth', 'verified'])
      ->name('expense.data');
 // Route::get('expense/calendar', [ExpenseCategoryDetailController::class, 'renderExpenseCalendar'])
 //      ->middleware(['auth', 'verified'])

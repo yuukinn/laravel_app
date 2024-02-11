@@ -56,9 +56,37 @@
     color:#f28d35; 
 }
 
+.month-btn {
+    border: none;
+    background-color: #f4f5fb;
+    font-size: 2rem; 
+}
+
 .amount-text {
     font-size: 12px;
+    color: red;
 }
+
+.test {
+    color: #ccc;
+}
+
+.base {
+    background-color: #f4f5fb;
+}
+
+.bi-lg {
+    font-size: 2rem;
+}
+
+.today-color {
+    background-color: #9cfeb3;
+}
+
+.calendar {
+    width: 40px;
+}
+
 /* footer */
 footer {
     background-color: #e7e7e7; 

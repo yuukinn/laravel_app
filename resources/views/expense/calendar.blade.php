@@ -9,16 +9,17 @@
     <link rel="stylesheet" href="/css/style.css">
     <title>Document</title>
 </head>
-<body>
-    <div>
-        <button class="month_btn" id="last_month">前の月</button>
-        <button class="month_btn" id="next_month">次の月</button>
+<body class="base">
+    <x-layouts.expense-manager>
+    <div class="text-center my-4"> 
+        <button class="month-btn btn-lg" id="last_month"><<</button>
+        <span class="expense-date"></span>
+        <button class="month-btn btn-lg" id="next_month">>></button>
     </div>
+    <!-- カレンダー -->
     <div class="container calendar w-100">
-       
     </div>
-    <div>
-    </div>
+    </x-layouts.expense-manager>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         const amounts = @json($amounts);
@@ -46,6 +47,9 @@
             // 月初めの日付を取得
             let startOfMonth = new Date(year, month -1 , 1);
 
+            // 来月の月初の日付を取得
+            const nextStartOfDate = new Date(year, month, 1);
+
             // 今月末の日付取得
             let endOfMonth = new Date(year, month, 0);
             let endOfdate = endOfMonth.getDate();
@@ -53,42 +57,77 @@
             // 月初の曜日を取得
             let startOfWeek = startOfMonth.getDay();
 
-            let calendarHtml = '<p>' + year + '年' + month + '月';
+            document.querySelector('.expense-date').innerHTML = year + '年' + month + '月';
             // calendarHtml += '<div class="table-responsive">';
-            calendarHtml += '<table class="table container" border="1">';
+            calendarHtml = '<table class="table container">';
             // 曜日列作成
             calendarHtml += '<thead>'
             weeks.forEach(function(week){
-                calendarHtml += '<th class="header">' + week + '</th>';
+                calendarHtml += '<th class="text-center header">' + week + '</th>';
             });
             calendarHtml += '</thead>';
 
             // 日付列作成
-            calendarHtml += '<tbody><tr>';
-            for (let i = 1; i <= endOfdate; i++) {
-                if (i == 1 && startOfMonth.getDay() != 0) {
-                    calendarHtml += '<td colspan=' + startOfWeek + '></td>'
-                }
-                // 日曜日で改行を入れる
-                if (startOfMonth.getDay() == 0) {
-                    calendarHtml += '</tr><tr>'
-                }
-                // console.log(startOfMonth.getDate());
-                // 今日の日付の場合、緑にする
-                if (startOfMonth.getYear() == dt.getYear() && startOfMonth.getMonth() == dt.getMonth() && startOfMonth.getDate() == dt.getDate()){
-                    calendarHtml += '<td class="bg-success">'  + startOfMonth.getDate() +  '<br>' +
+            calendarHtml += '<tbody>';
+            for (let w = 0; w  < 6; w++ ) {
+                calendarHtml += '<tr>';
+                for (let i = 0; i < 7; i++) {
+
+                    if (w == 0 && startOfMonth.getDay() != i) {
+                        calendarHtml += '<td>' +  '</td>'
+                        continue;
+                    }
+
+                    if (startOfMonth.getMonth() == nextStartOfDate.getMonth()) {
+                        console.log("d")
+                        calendarHtml += '<td class="text-center calendar">'  + '<p class="date m-0">' + startOfMonth.getDate() + '</p>'  + '<br>' + 
+                                    '</td>';
+                        // 1日進める処理
+                        startOfMonth.setDate(startOfMonth.getDate() + 1);
+                        continue;
+                    }
+            
+                    if (startOfMonth.getYear() == dt.getYear() && startOfMonth.getMonth() == dt.getMonth() && startOfMonth.getDate() == dt.getDate()){
+                    calendarHtml += '<td class="text-center calendar">'  + '<p class="m-0 today-color">' + startOfMonth.getDate() +  '</p>' +
                                      checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); +  
                                     '</td>';
-                }else {
-                    calendarHtml += '<td class="">'  + startOfMonth.getDate() +  '<br>' +
+                    } else {
+                    calendarHtml += '<td class="text-center calendar">'  + '<p class="m-0">' + startOfMonth.getDate() +  '</p>' +
                                      checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); + 
                                     '</td>';
-                    // calendarHtml += checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data);
-                }
-                startOfMonth.setDate(startOfMonth.getDate() + 1);
-            }
+                    }
+                   
 
-            calendarHtml += '</tr></tbody>';
+                    // 1日進める処理
+                    startOfMonth.setDate(startOfMonth.getDate() + 1);
+
+                }
+                calendarHtml += '</tr>';
+            }
+            // for (let i = 1; i <= endOfdate; i++) {
+            //     if (i == 1 && startOfMonth.getDay() != 0) {
+            //         calendarHtml += '<td colspan=' + startOfWeek + '></td>'
+            //     }
+            //     // 日曜日で改行を入れる
+            //     if (startOfMonth.getDay() == 0) {
+            //         calendarHtml += '</tr><tr>'
+            //     }
+            //     // console.log(startOfMonth.getDate());
+            //     // 今日の日付の場合、緑にする
+            //     if (startOfMonth.getYear() == dt.getYear() && startOfMonth.getMonth() == dt.getMonth() && startOfMonth.getDate() == dt.getDate()){
+            //         calendarHtml += '<td class="text-center bg-success">'  + startOfMonth.getDate() +  '<br>' +
+            //                          checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); +  
+            //                         '</td>';
+            //     }else {
+            //         calendarHtml += '<td class="text-center">'  + startOfMonth.getDate() +  '<br>' +
+            //                          checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); + 
+            //                         '</td>';
+            //         // calendarHtml += checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data);
+            //     }
+            //     startOfMonth.setDate(startOfMonth.getDate() + 1);
+            // }
+
+            calendarHtml += '</tbody>';
             calendarHtml += '</table>';
             // calendarHtml += '</div>';
 
@@ -137,9 +176,7 @@
         function checkDate(date, data){
             for (let j = 0; j < data.length; j++){
                 if (date == data[j]['date']){
-                    console.log(date);
-                    console.log(data[j]['date']);
-                    return '<br><span class="amount-text">' + "￥" + data[j]['date_amount'] + '</span>';
+                    return '<span class="amount-text">' + "￥" + data[j]['date_amount'] + '</span>';
                 }
             }
             return '<br><span>' + "" + '</span>';

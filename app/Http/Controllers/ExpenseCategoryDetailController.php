@@ -291,9 +291,8 @@ class ExpenseCategoryDetailController extends Controller
         ]);
     }
 
-    public function renderCalendar(Request $request)
+    public function renderCalendar():View
     {   
-
         $currentDate = Carbon::now();
         $startOfMonth = $currentDate->copy()->startOfMonth()->format('Y-m-d');
         $endOfMonth = $currentDate->copy()->endOfMonth()->format('Y-m-d');
@@ -301,14 +300,6 @@ class ExpenseCategoryDetailController extends Controller
 
         $user = Auth::user();
         $userId = $user->id;
-
-        $year = $request->input('year');
-        if($request->input('year') != NULL || $request->input('month') != NULL) {
-            $year = $request->input('year');
-            $month = $request->input('month');
-            $yearMonth = $year . '-' . $month;
-        }
-
         $amounts = ExpenseCategoryDetail::select('date', DB::raw('SUM(amount) as date_amount'))
             ->where([
                 ['user_id', $userId],
@@ -319,8 +310,28 @@ class ExpenseCategoryDetailController extends Controller
 
         return view('expense/calendar',[
             'amounts' => $amounts,
-            'year' => $year,
         ]);
+    }
+
+    public function getCalendar(Request $request){
+        $user = Auth::user();
+        $userId = $user->id;
+        $year = $request->year;
+        $month = sprintf("%02d", $request->month);
+        
+        if ($year == Null || $month == Null){
+            abort(404);
+        }
+    
+        $yearMonth = $year . '-' . $month;
+        $amounts = ExpenseCategoryDetail::select('date', DB::raw('SUM(amount) as date_amount'))
+            ->where([
+                ['user_id', $userId],
+                ['date', 'LIKE', $yearMonth . '%'],
+            ])
+            ->groupBy('date')
+            ->get(); 
+        return response()->json($amounts);
     }
 
     // public function renderExpenseCalendar(Request $request)

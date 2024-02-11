@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
@@ -13,12 +14,12 @@
         <button class="month_btn" id="last_month">前の月</button>
         <button class="month_btn" id="next_month">次の月</button>
     </div>
-    <div class="container calendar">
+    <div class="container calendar w-100">
        
     </div>
     <div>
-        <p>{{ $amounts }}</p>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         const amounts = @json($amounts);
         
@@ -35,13 +36,13 @@
         let month = dt.getMonth() + 1;
 
         // カレンダー表示処理
-        function showCalendar(year, month) {
-            let calendar = createCalendar(year, month);
+        function showCalendar(year, month, data) {
+            let calendar = createCalendar(year, month, data);
             document.querySelector('.calendar').innerHTML = calendar;
         }
 
         // カレンダーの土台作成
-        function createCalendar(year, month){
+        function createCalendar(year, month, data){
             // 月初めの日付を取得
             let startOfMonth = new Date(year, month -1 , 1);
 
@@ -53,7 +54,8 @@
             let startOfWeek = startOfMonth.getDay();
 
             let calendarHtml = '<p>' + year + '年' + month + '月';
-            calendarHtml += '<table class="table" border="1">';
+            // calendarHtml += '<div class="table-responsive">';
+            calendarHtml += '<table class="table container" border="1">';
             // 曜日列作成
             calendarHtml += '<thead>'
             weeks.forEach(function(week){
@@ -73,16 +75,22 @@
                 }
                 // console.log(startOfMonth.getDate());
                 // 今日の日付の場合、緑にする
-                if (startOfMonth.getDate() == dt.getDate()){
-                    calendarHtml += '<td class="bg-success">' + startOfMonth.getDate() + '</td>';
+                if (startOfMonth.getYear() == dt.getYear() && startOfMonth.getMonth() == dt.getMonth() && startOfMonth.getDate() == dt.getDate()){
+                    calendarHtml += '<td class="bg-success">'  + startOfMonth.getDate() +  '<br>' +
+                                     checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); +  
+                                    '</td>';
                 }else {
-                    calendarHtml += '<td class="">' + startOfMonth.getDate() + '</td>';
-                    // calendarHtml += '<td>' + i + '<br><span>' + "￥200" + '</span>' + '</td>';
+                    calendarHtml += '<td class="">'  + startOfMonth.getDate() +  '<br>' +
+                                     checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); + 
+                                    '</td>';
+                    // calendarHtml += checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data);
                 }
                 startOfMonth.setDate(startOfMonth.getDate() + 1);
             }
 
             calendarHtml += '</tr></tbody>';
+            calendarHtml += '</table>';
+            // calendarHtml += '</div>';
 
             return calendarHtml;
         }
@@ -110,27 +118,38 @@
                 }
             }
             // Ajaxリクエスト送信
-            fetch('{{ route("expense.calendar") }}?year=' + year + '&month=' + month, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
+            $.ajax({
+                url:'/expense/calendar/detail',
+                method:'GET',
+                data:{year:year, month:month},
+                dataType: "json",
+                contentType: 'application/json',
+                success: function(res){
+                    showCalendar(year, month, res);
                 },
+                error: function (xhr, status, error){
+                    console.error('Ajaxデータ送信エラー:', error);
+                }
             })
-            .then(response => response.text())
-            .then(data => {
-                let getYear = data.year;
-                console.log(getYear); 
-                showCalendar(year, month);
-            });
         }
 
+        // 日付ごとの支出額に調整する
+        function checkDate(date, data){
+            for (let j = 0; j < data.length; j++){
+                if (date == data[j]['date']){
+                    console.log(date);
+                    console.log(data[j]['date']);
+                    return '<br><span class="amount-text">' + "￥" + data[j]['date_amount'] + '</span>';
+                }
+            }
+            return '<br><span>' + "" + '</span>';
+        }
         
-
-
         document.getElementById('next_month').addEventListener('click', moveCalendar);
         document.getElementById('last_month').addEventListener('click', moveCalendar);
 
-        showCalendar(year, month); 
+        // カレンダー表示
+        showCalendar(year, month, amounts); 
 
     </script>
 </body>

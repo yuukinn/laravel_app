@@ -54,21 +54,22 @@ Route::get('expense/index/{type?}/{year?}/{month?}/{targetmonth?}', [ExpenseCate
           'month' => '\d{1,2}',
       ])
      ->name('expense.index');
+// カレンダー
 Route::get('expense/calendar', [ExpenseCategoryDetailController::class, 'renderCalendar'])
      ->middleware(['auth', 'verified'])
      ->name('expense.calendar');
 Route::get('expense/calendar/detail', [ExpenseCategoryDetailController::class, 'getCalendar'])
      ->middleware(['auth', 'verified'])
      ->name('expense.data');
-// Route::get('expense/calendar', [ExpenseCategoryDetailController::class, 'renderExpenseCalendar'])
-//      ->middleware(['auth', 'verified'])
-//      ->name('expense.calendar');
+
 // Route::get('expense/index/{page_id?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
 //      ->middleware(['auth', 'verified'])
 //      ->name('expense.index');
-Route::get('expense/download/index', [ExpenseCategoryDetailController::class, 'exportCsv'])
-     ->middleware(['auth', 'verified'])
-     ->name('expense.csv');
+
+// Route::get('expense/download/index', [ExpenseCategoryDetailController::class, 'exportCsv'])
+//      ->middleware(['auth', 'verified'])
+//      ->name('expense.csv');
+
 Route::delete('expense/destroy/{expenseCategoryDetail}', [ExpenseCategoryDetailController::class, 'destroy'])
      ->middleware(['auth', 'verified'])
      ->name('expense.destroy');
@@ -81,6 +82,7 @@ Route::post('goal_amount/store', [GoalAmountController::class, 'store'])
 Route::put('goal_amount/edit/{goalAmounts}', [GoalAmountController::class, 'update'])
      ->middleware(['auth', 'verified'])
      ->name('goal_amount.edit');
-Route::get('report/index', [ExpenseCategoryDetailController::class, 'showReport'])
+// レポート出力
+Route::get('report/index/{year?}/{month?}/{targetmonth?}', [ExpenseCategoryDetailController::class, 'showReport'])
      ->middleware(['auth', 'verified'])
      ->name('report.index');

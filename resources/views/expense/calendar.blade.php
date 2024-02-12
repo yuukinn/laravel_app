@@ -17,7 +17,7 @@
         <button class="month-btn btn-lg" id="next_month">>></button>
     </div>
     <!-- カレンダー -->
-    <div class="container calendar w-100">
+    <div class="container calendar">
     </div>
     </x-layouts.expense-manager>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -59,7 +59,7 @@
 
             document.querySelector('.expense-date').innerHTML = year + '年' + month + '月';
             // calendarHtml += '<div class="table-responsive">';
-            calendarHtml = '<table class="table container">';
+            calendarHtml = '<table class="table-responsive w-100">';
             // 曜日列作成
             calendarHtml += '<thead>'
             weeks.forEach(function(week){
@@ -80,7 +80,7 @@
 
                     if (startOfMonth.getMonth() == nextStartOfDate.getMonth()) {
                         console.log("d")
-                        calendarHtml += '<td class="text-center calendar">'  + '<p class="date m-0">' + startOfMonth.getDate() + '</p>'  + '<br>' + 
+                        calendarHtml += '<td class="text-center calendar-col pe-1">'  + '<p class="date m-0">' + startOfMonth.getDate() + '</p>'  + '<br>' + 
                                     '</td>';
                         // 1日進める処理
                         startOfMonth.setDate(startOfMonth.getDate() + 1);
@@ -88,11 +88,11 @@
                     }
             
                     if (startOfMonth.getYear() == dt.getYear() && startOfMonth.getMonth() == dt.getMonth() && startOfMonth.getDate() == dt.getDate()){
-                    calendarHtml += '<td class="text-center calendar">'  + '<p class="m-0 today-color">' + startOfMonth.getDate() +  '</p>' +
+                    calendarHtml += '<td class="text-center calendar-col pe-1">'  + '<p class="m-0 today-color">' + startOfMonth.getDate() +  '</p>' +
                                      checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); +  
                                     '</td>';
                     } else {
-                    calendarHtml += '<td class="text-center calendar">'  + '<p class="m-0">' + startOfMonth.getDate() +  '</p>' +
+                    calendarHtml += '<td class="text-center calendar-col pe-1">'  + '<p class="m-0">' + startOfMonth.getDate() +  '</p>' +
                                      checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); + 
                                     '</td>';
                     }
@@ -104,33 +104,8 @@
                 }
                 calendarHtml += '</tr>';
             }
-            // for (let i = 1; i <= endOfdate; i++) {
-            //     if (i == 1 && startOfMonth.getDay() != 0) {
-            //         calendarHtml += '<td colspan=' + startOfWeek + '></td>'
-            //     }
-            //     // 日曜日で改行を入れる
-            //     if (startOfMonth.getDay() == 0) {
-            //         calendarHtml += '</tr><tr>'
-            //     }
-            //     // console.log(startOfMonth.getDate());
-            //     // 今日の日付の場合、緑にする
-            //     if (startOfMonth.getYear() == dt.getYear() && startOfMonth.getMonth() == dt.getMonth() && startOfMonth.getDate() == dt.getDate()){
-            //         calendarHtml += '<td class="text-center bg-success">'  + startOfMonth.getDate() +  '<br>' +
-            //                          checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); +  
-            //                         '</td>';
-            //     }else {
-            //         calendarHtml += '<td class="text-center">'  + startOfMonth.getDate() +  '<br>' +
-            //                          checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); + 
-            //                         '</td>';
-            //         // calendarHtml += checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data);
-            //     }
-            //     startOfMonth.setDate(startOfMonth.getDate() + 1);
-            // }
-
             calendarHtml += '</tbody>';
             calendarHtml += '</table>';
-            // calendarHtml += '</div>';
-
             return calendarHtml;
         }
 

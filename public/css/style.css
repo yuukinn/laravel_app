@@ -36,6 +36,13 @@
     font-weight: bold;
 }
 
+.arrow {
+    color: #3b3e3b;
+}
+
+.arrow:hover {
+    opacity: 0.8;
+}
 .consumption-color {
     background-color: #96a6fb;
 }
@@ -67,12 +74,12 @@
     color: red;
 }
 
-.test {
+.date {
     color: #ccc;
 }
 
 .base {
-    background-color: #f4f5fb;
+    background-color: #f5f6f8;
 }
 
 .bi-lg {
@@ -83,8 +90,12 @@
     background-color: #9cfeb3;
 }
 
-.calendar {
-    width: 40px;
+.calendar-col {
+    width: 30px;
+}
+
+.cal-icon {
+    color: #f28d35;
 }
 
 /* footer */

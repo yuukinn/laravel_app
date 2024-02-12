@@ -17,21 +17,21 @@
         <h2 class="text-center">
             {{ number_format($sum) }}円
         </h2>
-
+        <p class="test"></p>
         <!-- 年月 -->
         <h3 class="text-center">
-            <a style="text-decoration:none;" href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'pre']) }}"><<</a>
+            <a style="text-decoration:none;" class="arrow" href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'pre']) }}"><<</a>
             {{ \Carbon\Carbon::createFromFormat('Y-m', $yearMonth)->format('Y年m月') }}
-            <a style="text-decoration:none;" href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'next']) }}">>></a>
+            <a style="text-decoration:none;" class="arrow" href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'next']) }}">>></a>
         </h3>
-        <a href="{{ route('expense.calendar') }}">カレンダー</a>
-        <div class="d-flex justify-content-end mt-4">
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ route('expense.calendar') }}"><i class="bi bi-calendar-date fs-1 cala-icon"></i></a>
             <div class="d-flex justify-content-end">
-                <form action="{{ route('expense.index', ['type' => $date_type]) }}" method="GET" class="input-group mb-3 container d-flex justify-content-end p-0">
-                    <button class="btn btn-outline-secondary" type="submit" name="type" id="date" value="date_asc">日付</button>
+                <form action="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month ]) }}" method="GET" class="input-group mb-3 container d-flex justify-content-end p-0">
+                    <button class="btn btn-outline-secondary" type="submit"  id="date" >日付</button>
                 </form>
-                <form action="{{ route('expense.index', ['type' => $amount_type]) }}" method="GET" class="input-group mb-3 container d-flex justify-content-end p-0">
-                    <button class="btn btn-outline-secondary" type="submit" name="type" id="amount" value="amount_asc">金額</button>
+                <form action="{{ route('expense.index', ['type' => $amount_type, 'year' => $year, 'month' => $month ]) }}" method="GET" class="input-group mb-3 container d-flex justify-content-end p-0">
+                    <button class="btn btn-outline-secondary" type="submit"  id="amount">金額</button>
                 </form>
             </div>
            

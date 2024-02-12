@@ -19,6 +19,7 @@ class ExpenseCategoryDetailController extends Controller
 {
     public function getCategoryDetails($type=null,$year=null, $month=null, $targetMonth=null):View|RedirectResponse
     {
+        // 並び替え定数
         $date_type = "date_asc";
         $amount_type = "amount_asc";
         
@@ -29,9 +30,11 @@ class ExpenseCategoryDetailController extends Controller
         $endOfMonth = $currentDate->copy()->endOfMonth()->format('Y-m-d');
         $yearMonth = $currentDate->copy()->format('Y-m');
 
+        //　現在の年月取得
         $currentYear = $currentDate->year;
         $currentMonth = $currentDate->month;
 
+        // 年月の設定
         if($year==null){
             $year = (string)$currentDate->year;
         }
@@ -39,6 +42,12 @@ class ExpenseCategoryDetailController extends Controller
             $month = (string)$currentDate->month;
         }
 
+        // パラメーターで取得した値を設定
+        $yearMonth = $year . '-' . $month;
+        $startOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->endOfMonth()->format('Y-m-d');
+        
+        // 一月前の処理
         if($targetMonth == 'pre'){
             $month--;
 
@@ -51,6 +60,7 @@ class ExpenseCategoryDetailController extends Controller
             $endOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->endOfMonth()->format('Y-m-d');
         }
 
+        // 一月先の処理
         if($targetMonth == 'next'){
             $month++;
             
@@ -151,17 +161,16 @@ class ExpenseCategoryDetailController extends Controller
                 ->paginate(10);
         }
 
-        $sum = ExpenseCategoryDetail::where('user_id', $userID)->sum('amount');
-
-        $year_month_expense_datas = ExpenseCategoryDetail::selectRaw("DISTINCT DATE_FORMAT(date, '%Y-%m') AS `year_month`")
-            ->get();
+        // 支出合計処理
+        $sum = ExpenseCategoryDetail::where('user_id', $userID)
+                ->whereBetween('date', [$startOfMonth, $endOfMonth])
+                ->sum('amount');
 
         return view('expense/index', [
             'categoryDetails' => $categoryDetails,
             'sum' => $sum,
             'userID'=> $userID,
             'yearMonth' => $yearMonth,
-            'year_month_expense_datas' => $year_month_expense_datas,
             'date_type' => $date_type,
             'amount_type' => $amount_type,
             'currentYear' => $currentYear,
@@ -192,20 +201,12 @@ class ExpenseCategoryDetailController extends Controller
     
         //保存
         $categoryDetail->save();
-        // 終了時間を取得
-        $endTime = microtime(true);
- 
+        
         // // Log::info('デバッグ情報: ' . $debugInfo);
         // if(!$user->has_set_email){
         //     // イベントハッカ
         //     event(new ExpenseRegistered($categoryDetail));
         // }
-
-        // 処理時間を計算（ミリ秒単位でログに記録）
-        $executionTime = round(($endTime - $startTime) * 1000, 2);
-        Log::info('処理時間: ' . $executionTime . 'ms');
-        return redirect(route('expense.index'));
-
     }
 
     public function destroy(ExpenseCategoryDetail $expenseCategoryDetail):RedirectResponse {
@@ -216,13 +217,47 @@ class ExpenseCategoryDetailController extends Controller
     }
 
     // レポート出力
-    public function showReport():View
+    public function showReport($year=null, $month=null, $targetMonth=null):View
     {
          // 年月日を取得
         $currentDate = Carbon::now();
         $startOfMonth = $currentDate->copy()->startOfMonth()->format('Y-m-d');
         $endOfMonth = $currentDate->copy()->endOfMonth()->format('Y-m-d');
         $yearMonth = $currentDate->copy()->format('Y-m');
+
+         // 年月の設定
+         if($year==null){
+            $year = (string)$currentDate->year;
+        }
+        if($month==null){
+            $month = (string)$currentDate->month;
+        }
+
+        // 一月前の処理
+        if($targetMonth == 'pre'){
+            $month--;
+
+            if($month < 1) {
+                $year--;
+                $month = 12;
+            }
+            $yearMonth = $year . '-' . $month;
+            $startOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->startOfMonth()->format('Y-m-d');
+            $endOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->endOfMonth()->format('Y-m-d');
+        }
+    
+        // 一月先の処理
+        if($targetMonth == 'next'){
+            $month++;
+            
+            if($month > 12 ){
+                $year++;
+                $month = 1;
+            }
+            $yearMonth = $year . '-' . $month;
+            $startOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->startOfMonth()->format('Y-m-d');
+            $endOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->endOfMonth()->format('Y-m-d');
+        }
 
         // ログインユーザー
         $user = AUth::user();
@@ -253,21 +288,11 @@ class ExpenseCategoryDetailController extends Controller
             ->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->sum('amount');
         
-        // $categoryTotals = ExpenseCategory::withSum('categoryDetails', 'amount')
-        //     ->join('expense_category_details', 'expense_categories.id', '=', 'expense_category_details.category_id')
-        //     ->where('expense_category_details.user_id', $userId)
-        //     ->whereBetween('date', [$startOfMonth, $endOfMonth])
-        //     ->groupBy('expense_categories.category')
-        //     ->get();
-
         $categoryTotals = ExpenseCategory::withSum(['categoryDetails' => function ($query) use ($userId, $startOfMonth, $endOfMonth) {
             $query->where('user_id', $userId)
             ->whereBetween('date', [$startOfMonth, $endOfMonth]);
         }], 'amount')
         ->get();
-
-        // var_dump($categoryTotals[0]['category_details_sum_amount']);
-        // exit;
 
         $categoryList = [];
         $amountList = [];
@@ -277,10 +302,10 @@ class ExpenseCategoryDetailController extends Controller
             array_push($amountList, $categoryTotal['category_details_sum_amount']);
         }
 
-        //％
-
         return view('report/index', [
             'yearMonth' => $yearMonth,
+            'year' => (string)$year,
+            'month' => (string)$month,
             'investmentSum' => $investmentSum,
             'consumptionSum' => $consumptionSum,
             'wasteSum' => $wasteSum,
@@ -290,7 +315,7 @@ class ExpenseCategoryDetailController extends Controller
             'totalSum' => $totalSum,
         ]);
     }
-
+    // カレンダー出力
     public function renderCalendar():View
     {   
         $currentDate = Carbon::now();

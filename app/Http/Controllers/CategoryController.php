@@ -35,34 +35,32 @@ class CategoryController extends Controller
     {   
         //カテゴリ登録用のオブジェクトを用意
         $expensecategory = new ExpenseCategory();
-        
 
-        
-        //リクエストオブジェクトからパラメータを取得
-        $expensecategory -> category = $request -> category;
-        // var_dump($expensecategory);
-        // exit;        
+        $expensecategory->category = $request->category;
+
+        $categoryId = "NULL";
 
         $existenceCategory = ExpenseCategory::where('category', $request->category)->get();
         $number = count($existenceCategory);
         if (count($existenceCategory)){
             $categoryId = $existenceCategory->first()->id;
         }
-
        
         // 中間テーブルの重複チェック
-        $existingEntry = ExpenseCategoryUser::where([
-            'user_id' => $request->user_id,
-            'expense_category_id' => $categoryId,
-        ])
-        ->first();
-        if($existingEntry){
-            return redirect(route('expense.create'))
-            ->with('message', 'すでに追加しています。');
+        if($categoryId != NULL) {
+            $existingEntry = ExpenseCategoryUser::where([
+                'user_id' => $request->user_id,
+                'expense_category_id' => $categoryId,
+            ])
+            ->first();
+            if($existingEntry){
+                return redirect(route('expense.create'))
+                ->with('message', 'すでに追加しています。');
+            }
         }
         
         // カテゴリが存在している場合
-        if ($existenceCategory) {
+        if (count($existenceCategory) != 0) {
                 //カテゴリユーザーテーブル(中間テーブル)を登録
                 ExpenseCategoryUser::create([
                     'user_id' => $request->user_id,

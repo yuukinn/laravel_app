@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseCategoryDetailController;
 use App\Http\Controllers\GoalAmountController;
+use App\Http\Controllers\IncomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,7 +62,14 @@ Route::get('expense/calendar', [ExpenseCategoryDetailController::class, 'renderC
 Route::get('expense/calendar/detail', [ExpenseCategoryDetailController::class, 'getCalendar'])
      ->middleware(['auth', 'verified'])
      ->name('expense.data');
-
+// 収入
+Route::prefix('income/create')
+     ->middleware(['auth', 'verified'])
+     ->name('income.')
+     ->controller(IncomeController::class)
+     ->group(function (){
+          Route::post('', 'store')->name('store');
+     });
 // Route::get('expense/index/{page_id?}', [ExpenseCategoryDetailController::class, 'getCategoryDetails'])
 //      ->middleware(['auth', 'verified'])
 //      ->name('expense.index');

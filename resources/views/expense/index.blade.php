@@ -11,13 +11,30 @@
 </head>
 <body>
     <x-layouts.expense-manager>
-
-        <!-- 支出金額 -->
-        <p class="text-center mb-0 mt-3">支出金額</p>
-        <h2 class="text-center">
-            {{ number_format($sum) }}円
-        </h2>
-        <p class="test"></p>
+        <div class="my-3">
+            <div class="d-flex justify-content-evenly">
+                <h2>
+                    <p class="item mb-0">収入</p>
+                    {{ number_format($incomeSum) }}
+                </h2>
+                <h2>
+                    <p class="item mb-0">-</p>
+                    -
+                </h2>
+                <h2>
+                    <p class="item mb-0">支出</p>
+                    {{ number_format($sum) }}
+                </h2>
+                <h2>
+                    <p class="item mb-0">=</p>
+                    =
+                </h2>
+                <h2>
+                        <p class="item mb-0">収支</p>
+                        {{ number_format($incomeAndExpense) }}円
+                </h2>
+            </div>
+        </div>
         <!-- 年月 -->
         <h3 class="text-center">
             <a style="text-decoration:none;" class="arrow" href="{{ route('expense.index', ['type' => $date_type, 'year' => $year, 'month' => $month, 'targetmonth' => 'pre']) }}"><<</a>
@@ -34,7 +51,6 @@
                     <button class="btn btn-outline-secondary" type="submit"  id="amount">金額</button>
                 </form>
             </div>
-           
         </div>
         @if(session('message'))
             <div class="container text-center mt-3 mb-3">

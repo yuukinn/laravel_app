@@ -19,6 +19,9 @@
                     <a class="nav-link active tab-color text-black" id="expense_tab" data-tab-id="add_expense_form" aria-current="page">支出追加</a>
                 </li >
                 <li class="nav-item">
+                    <a class="nav-link text-black" id="income_tab" data-tab-id="add_income_form">収入追加</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-black" id="category_tab" data-tab-id="add_category_form">カテゴリ追加</a>
                 </li>
             </ul>
@@ -28,6 +31,9 @@
                     {{session('message')}}
                 @endif
             </div>
+
+
+            <!-- 支出フォーム -->
             <form id="add_expense_form" name="add_expense_form" class="mt-3" action='{{ route("expense.detail.store") }}' method='POST'>
                 <div class="d-flex justify-content-between">
                     <h3>支出追加</h3>
@@ -79,6 +85,37 @@
                     <input type="reset" value="リセット" class="btn btn-lg rounded-pill" id="reset-btn">
                 </div>
             </form>
+
+            <!-- 収入フォーム -->
+            <form  action="{{ route('income.store') }}" method="POST" id="add_income_form" name="add_income_form" class="">
+                @csrf
+                <h3>収入追加</h3>
+                <div class="mt-2 mb-5">
+                    <div class="mb-3">
+                        <label class="form-label"><span class="text-danger">※</span>カテゴリ</label>
+                        <input type="text" name="category" class="form-control" value="{{ old('category') ?? '給与'}}">
+                        <span class="small text-danger">※30文字以下まで登録可能です。</span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><span class="text-danger">※</span>金額</label>
+                        <input class="form-control" type="number" name='price' id="price" value="{{ old('price') }}">
+                    </div>
+                    <div class="mb-3">
+                    <label class="form-label"><span class="text-danger">※</span>日付</label>
+                         <input class="form-control" type="date" name="date" id="date" value="{{ old('date') ?? $currentDateFormatted}}">
+                    </div>
+                    <div class="d-grid gap-2 mx-auto my-4">
+                        <input type="submit" value="収入追加" id="add-btn" class="btn btn-lg rounded-pill border-0">
+                    </div>
+                    <div class="d-grid gap-2 mx-auto">
+                        <input type="reset" value="リセット" class="btn btn-lg rounded-pill" id="reset-btn">
+                    </div>
+                </div>
+            </form>
+
+
+
+            <!-- カテゴリフォーム -->
             <form  action="{{ route('expense.store') }}"   method="POST" id="add_category_form" name="add_category_form" class="container  text-center">
                 @csrf
                 <h3>カテゴリ追加</h3>

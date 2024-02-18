@@ -98,6 +98,10 @@
     color: #f28d35;
 }
 
+.item {
+    font-size: 15px;
+}
+
 /* footer */
 footer {
     background-color: #e7e7e7; 

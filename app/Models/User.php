@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\ExpenseCategory;
 use App\Models\GoalAmount;
+use App\Models\incomeRecord;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -24,6 +25,11 @@ class User extends Authenticatable
     public function getGoalAmount():HasOne
     {
         return $this->hasOne(GoalAmount::class);
+    }
+
+    public function incomeRecord():HasMany
+    {
+        return $this->hasMany(IncomeRecord::class);
     }
     use HasApiTokens, HasFactory, Notifiable;
     /**

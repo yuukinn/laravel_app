@@ -10,10 +10,12 @@ use App\Events\ExpenseRegistered;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ExpenseCategoryDetail;
 use App\Models\ExpenseCategory;
+use App\Models\IncomeRecord;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class ExpenseCategoryDetailController extends Controller
 {
@@ -79,38 +81,6 @@ class ExpenseCategoryDetailController extends Controller
 
         //カテゴリ詳細一覧を取得
         switch($type) {
-            case "inv.":
-                $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                    ->where([
-                        ['user_id', $userID],
-                        ['is_investment', '=', 1]
-                    ])
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(4);
-                break;
-            
-            case 'cons.';
-                $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                    ->where([
-                        ['user_id', $userID],
-                        ['is_consumption', '=', 1]
-                    ])
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(4);
-
-                break;
-
-            case 'waste';
-                $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                    ->where([
-                        ['user_id', $userID],
-                        ['is_waste', '=', 1]
-                    ])
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(4);
-
-                break;
-            
             case 'date_asc';
                 $date_type = "date_desc";
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
@@ -157,7 +127,7 @@ class ExpenseCategoryDetailController extends Controller
                 $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
                 ->where('user_id', $userID)
                 ->whereBetween('date', [$startOfMonth, $endOfMonth])
-                ->orderBy('created_at', 'desc')
+                ->orderBy('date', 'desc')
                 ->paginate(10);
         }
 
@@ -165,6 +135,14 @@ class ExpenseCategoryDetailController extends Controller
         $sum = ExpenseCategoryDetail::where('user_id', $userID)
                 ->whereBetween('date', [$startOfMonth, $endOfMonth])
                 ->sum('amount');
+        
+        // 収入合計処理
+        $incomeSum = IncomeRecord::where('user_id', $userID)
+                ->whereBetween('date', [$startOfMonth, $endOfMonth])
+                ->sum('amount');
+
+        // 収支
+        $incomeAndExpense = $incomeSum - $sum;
 
         return view('expense/index', [
             'categoryDetails' => $categoryDetails,
@@ -177,14 +155,14 @@ class ExpenseCategoryDetailController extends Controller
             'currentMonth'=> $currentMonth,
             'year' => (string)$year,
             'month' => (string)$month,
+            'incomeSum' => $incomeSum,
+            'incomeAndExpense' => $incomeAndExpense,
         ]);
     }
 
     //　支出詳細登録
     public function storeDetail(ExpensePostRequest $request): RedirectResponse
     {
-        // 開始時間を取得
-        $startTime = microtime(true);
         $user = Auth::user();
         //Category詳細登録用のオブジェクトを作成する
         $categoryDetail = new ExpenseCategoryDetail();
@@ -207,6 +185,8 @@ class ExpenseCategoryDetailController extends Controller
         //     // イベントハッカ
         //     event(new ExpenseRegistered($categoryDetail));
         // }
+
+        return redirect(route('expense.create'))->with('message', '支出を追加しました。');
     }
 
     public function destroy(ExpenseCategoryDetail $expenseCategoryDetail):RedirectResponse {
@@ -332,13 +312,43 @@ class ExpenseCategoryDetailController extends Controller
             ])
             ->groupBy('date')
             ->get();
+        
+        // 支出合計処理
+        $sum = ExpenseCategoryDetail::where('user_id', $userId)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+        
+        $incomeSum = IncomeRecord::where('user_id', $userId)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
 
+        // 収支
+        $incomeAndExpense = $incomeSum - $sum;
+
+        // $apiKey = 'e0e333cb6ffb4623a4a111748241402';
+        // $city = 'Osaka'; // 例: Tokyo
+        // $lang = 'ja';
+
+        // $resp = Http::get("http://api.weatherapi.com/v1/forecast.json?key={$apiKey}&q={$city}&lang={$lang}&&days=7");
+        // $data = $resp->json();
+        // var_dump($data);
+        // exit;
+        // $temperature = $data['current']['tem_c'];
         return view('expense/calendar',[
             'amounts' => $amounts,
+            'sum' => $sum,
+            'incomeSum' => $incomeSum,
+            'incomeAndExpense' => $incomeAndExpense
+            // 'temperature' => $temperature,
         ]);
     }
 
     public function getCalendar(Request $request){
+
+        // 返すデータ
+        $resData = [];
+
+
         $user = Auth::user();
         $userId = $user->id;
         $year = $request->year;
@@ -349,6 +359,11 @@ class ExpenseCategoryDetailController extends Controller
         }
     
         $yearMonth = $year . '-' . $month;
+
+        $startOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::createFromFormat('Y-m', $yearMonth)->endOfMonth()->format('Y-m-d');
+
+
         $amounts = ExpenseCategoryDetail::select('date', DB::raw('SUM(amount) as date_amount'))
             ->where([
                 ['user_id', $userId],
@@ -356,7 +371,39 @@ class ExpenseCategoryDetailController extends Controller
             ])
             ->groupBy('date')
             ->get(); 
-        return response()->json($amounts);
+        
+        array_push($resData, $amounts);
+
+        // 収入合計処理
+        $incomeSum = IncomeRecord::where('user_id', $userId)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+        array_push($resData, $incomeSum);
+        
+        // 支出合計処理
+        $sum = ExpenseCategoryDetail::where('user_id', $userId)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+        array_push($resData, $sum);
+
+
+        // 収支
+        $incomeAndExpense = $incomeSum - $sum;
+        array_push($resData, $incomeAndExpense);
+
+        // // 収入
+        // $incomeAmounts = IncomeRecord::select('date', DB::raw('SUM(amount) as date_amount'))
+        //         ->where([
+        //             ['user_id', $userId],
+        //             ['date', 'LIKE', $yearMoth . '%'],
+        //         ])
+        //         ->groupBy('date')
+        //         ->get();
+        
+        // array_push($resData, $incomeAmounts);
+
+
+        return response()->json($resData);
     }
 
     // public function renderExpenseCalendar(Request $request)

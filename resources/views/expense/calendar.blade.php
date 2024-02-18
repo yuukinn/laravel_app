@@ -16,6 +16,30 @@
         <span class="expense-date"></span>
         <button class="month-btn btn-lg" id="next_month">>></button>
     </div>
+    <div class="my-3">
+        <div class="d-flex justify-content-evenly">
+            <div>
+                <p class="item mb-0 text-center">収入</p>
+                <h3 class="income"></h3>
+            </div>
+            <div>
+                <p class="item mb-0">-</p>
+                <h3>-</h3>
+            </div>
+            <div>
+                <p class="item mb-0 text-center">支出</p>
+                <h3 class="expense"></h3>
+            </div>
+            <div>
+                <p class="item mb-0">=</p>
+                <h3>=</h3>
+            </div>
+            <div>
+                <p class="item mb-0 text-center">収支</p>
+                <h3 class="incomeAndExpense"></h3>
+            </div>
+        </div>
+    </div>
     <!-- カレンダー -->
     <div class="container calendar">
     </div>
@@ -23,7 +47,13 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         const amounts = @json($amounts);
+
+        const income = @json($incomeSum);
         
+        const expense = @json($sum);
+
+        const incomeAndExpense = @json($incomeAndExpense);
+
         // 曜日の配列を作成
         const weeks = ['日','月', '火', '水', '木', '金', '土'];
 
@@ -37,9 +67,16 @@
         let month = dt.getMonth() + 1;
 
         // カレンダー表示処理
-        function showCalendar(year, month, data) {
+        function showCalendar(year, month, data, income, expense, incomeAndExpense) {
             let calendar = createCalendar(year, month, data);
             document.querySelector('.calendar').innerHTML = calendar;
+
+            // 収入
+            document.querySelector('.income').innerHTML = "￥" + Number(income).toLocaleString();
+            // 支出
+            document.querySelector('.expense').innerHTML = "￥" +  Number(expense).toLocaleString();
+            // 収支
+            document.querySelector('.incomeAndExpense').innerHTML = "￥" + incomeAndExpense.toLocaleString();
         }
 
         // カレンダーの土台作成
@@ -139,7 +176,12 @@
                 dataType: "json",
                 contentType: 'application/json',
                 success: function(res){
-                    showCalendar(year, month, res);
+                    // res[0]:1ヶ月の支出データ
+                    // res[1]:income
+                    // res[2]:expense
+                    // res[3]:incomeAndExpense
+                    // res[4]:1ヶ月の収入データ
+                    showCalendar(year, month, res[0], res[1], res[2], res[3]);
                 },
                 error: function (xhr, status, error){
                     console.error('Ajaxデータ送信エラー:', error);
@@ -151,8 +193,8 @@
         function checkDate(date, data){
             for (let j = 0; j < data.length; j++){
                 if (date == data[j]['date']){
-                    return '<span class="amount-text">' + "￥" + data[j]['date_amount'] + '</span>';
-                }
+                    return '<span class="amount-text">' + "￥" + Number(data[j]['date_amount']).toLocaleString() + '</span>';
+                } 
             }
             return '<br><span>' + "" + '</span>';
         }
@@ -161,7 +203,7 @@
         document.getElementById('last_month').addEventListener('click', moveCalendar);
 
         // カレンダー表示
-        showCalendar(year, month, amounts); 
+        showCalendar(year, month, amounts, income, expense, incomeAndExpense); 
 
     </script>
 </body>

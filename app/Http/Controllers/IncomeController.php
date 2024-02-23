@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\IncomeRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\IncomeRecord;
 
 class IncomeController extends Controller
 {
     // 収入追加
-    function store(Request $request): RedirectResponse
+    function store(IncomeRequest $request): RedirectResponse
     {
         $user = Auth::user();
         

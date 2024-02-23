@@ -17,6 +17,7 @@ return [
         'price' => '価格',
         'date' => '日付',
         'asset_type' => '資産タイプ',
-        'goal_amount' => '目標金額 '
+        'goal_amount' => '目標金額 ',
+        'category'=>'カテゴリー'
     ]
 ];

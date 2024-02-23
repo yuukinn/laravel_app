@@ -22,23 +22,33 @@
                 <p class="item mb-0 text-center">収入</p>
                 <h3 class="income"></h3>
             </div>
-            <div>
-                <p class="item mb-0">-</p>
+            <div class="d-flex align-items-center pt-3">
                 <h3>-</h3>
             </div>
             <div>
                 <p class="item mb-0 text-center">支出</p>
                 <h3 class="expense"></h3>
             </div>
-            <div>
-                <p class="item mb-0">=</p>
-                <h3>=</h3>
+            <div class="d-flex align-items-center pt-3">
+                <h3 >=</h3>
             </div>
             <div>
                 <p class="item mb-0 text-center">収支</p>
                 <h3 class="incomeAndExpense"></h3>
             </div>
         </div>
+    </div>
+    <div class="card-container" style="display: flex; flex-wrap: wrap;">
+        @for($i = 0; $i < count($temperature); $i++ )
+        <div class="card" style="width: 6rem; heigh: 6rem;">
+            <img src="{{ $temperature[$i]['day']['condition']['icon'] }}" alt="" style="width: 2rem; height: 2rem">
+            <div class="card-body">
+                <p class="card-text temperature-date">{{ $temperature[$i]['date'] }}</p>
+                <label for="" style="font-size: 14px">降水確率</label>
+                <p class="card-text">{{ $temperature[$i]['day']['daily_chance_of_rain']}}%</p>
+            </div>
+        </div>
+        @endfor
     </div>
     <!-- カレンダー -->
     <div class="container calendar">
@@ -204,6 +214,21 @@
 
         // カレンダー表示
         showCalendar(year, month, amounts, income, expense, incomeAndExpense); 
+
+        function formatDate(dateString){
+            let date = new Date(dateString);
+            let temperatureMonth = date.getMonth() + 1;
+            let temperatureDate = date.getDate();
+            return temperatureMonth + "/" + temperatureDate;
+        }
+
+        let temperatureDateList = document.querySelectorAll('.temperature-date');
+        temperatureDateList.forEach(function (temperatureDate) {
+            let dateString = temperatureDate.textContent;
+            let formattedDate = formatDate(dateString);
+            temperatureDate.textContent = formattedDate;
+        })           
+
 
     </script>
 </body>

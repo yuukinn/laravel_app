@@ -11,11 +11,14 @@
 </head>
 <body class="base">
     <x-layouts.expense-manager>
+
     <div class="text-center my-4"> 
         <button class="month-btn btn-lg" id="last_month"><<</button>
         <span class="expense-date"></span>
         <button class="month-btn btn-lg" id="next_month">>></button>
     </div>
+
+    <!-- 収支 -->
     <div class="my-3">
         <div class="d-flex justify-content-evenly">
             <div>
@@ -38,23 +41,35 @@
             </div>
         </div>
     </div>
-    <div class="card-container">
-        <div class="row">
-            @for($i = 0; $i < count($temperature); $i++ )
-            <div class="card col" style="width: 6rem; heigh: 6rem;">
-                <img src="{{ $temperature[$i]['day']['condition']['icon'] }}" alt="" style="width: 2rem; height: 2rem">
-                <div class="card-body">
-                    <p class="card-text temperature-date">{{ $temperature[$i]['date'] }}</p>
-                    <label for="" style="font-size: 14px">降水確率</label>
-                    <p class="card-text">{{ $temperature[$i]['day']['daily_chance_of_rain']}}%</p>
-                </div>
-            </div>
-            @endfor
-        </div>
-    </div>
+   
     <!-- カレンダー -->
     <div class="container calendar">
     </div>
+
+    <!--天気 -->
+    <div class="container">
+        @for($i = 0; $i < count($temperature); $i++ )
+        @if($temperature[$i]['date'] == $currentDate->format('Y-m-d'))
+        <div class="d-flex justify-content-between align-items-center border-bottom" style=" background-color: #a3f8b5;">
+            <p class="mb-0 temperature-date">{{ $temperature[$i]['date'] }}</p>
+            <img src="{{ $temperature[$i]['day']['condition']['icon'] }}" alt="Weather Icon" class="img-fluid mb-2" style="max-width: 50px; max-height: 50px;">
+            <div class="d-flex">
+                <label class="me-2">降水確率</label>
+                <p class="mb-0">{{ $temperature[$i]['day']['daily_chance_of_rain']}}%</p>
+            </div>
+        </div>
+        @else
+        <div class="d-flex justify-content-between align-items-center border-bottom">
+            <p class="mb-0 temperature-date">{{ $temperature[$i]['date'] }}</p>
+            <img src="{{ $temperature[$i]['day']['condition']['icon'] }}" alt="Weather Icon" class="img-fluid mb-2" style="max-width: 50px; max-height: 50px;">
+            <div class="d-flex">
+                <label class="me-2">降水確率</label>
+                <p class="mb-0">{{ $temperature[$i]['day']['daily_chance_of_rain']}}%</p>
+            </div>
+        </div>
+        @endif
+        @endfor
+</div>
     </x-layouts.expense-manager>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
@@ -88,7 +103,13 @@
             // 支出
             document.querySelector('.expense').innerHTML = "￥" +  Number(expense).toLocaleString();
             // 収支
-            document.querySelector('.incomeAndExpense').innerHTML = "￥" + incomeAndExpense.toLocaleString();
+            if (incomeAndExpense > 0){
+                document.querySelector('.incomeAndExpense').classList.add('text-primary');
+                document.querySelector('.incomeAndExpense').innerHTML = "￥" + incomeAndExpense.toLocaleString();
+            } else {
+                document.querySelector('.incomeAndExpense').classList.add('text-danger');
+                document.querySelector('.incomeAndExpense').innerHTML = "￥" + incomeAndExpense.toLocaleString();
+            }
         }
 
         // カレンダーの土台作成
@@ -107,7 +128,7 @@
             let startOfWeek = startOfMonth.getDay();
 
             document.querySelector('.expense-date').innerHTML = year + '年' + month + '月';
-            // calendarHtml += '<div class="table-responsive">';
+
             calendarHtml = '<table class="table-responsive w-100">';
             // 曜日列作成
             calendarHtml += '<thead>'
@@ -230,8 +251,6 @@
             let formattedDate = formatDate(dateString);
             temperatureDate.textContent = formattedDate;
         })           
-
-
     </script>
 </body>
 </html>

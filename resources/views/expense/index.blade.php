@@ -27,10 +27,17 @@
                 <h2 class="d-flex align-items-center pt-3">
                     =
                 </h2>
-                <h2>
+                @if($incomeAndExpense > 0)
+                <h2 class="text-primary">
                         <p class="item mb-0 text-center">収支</p>
                         {{ "￥" . number_format($incomeAndExpense) }}
                 </h2>
+                @else
+                <h2 class="text-danger">
+                        <p class="item mb-0 text-center">収支</p>
+                        {{ "￥" . number_format($incomeAndExpense) }}
+                </h2>
+                @endif
             </div>
         </div>
         <!-- 年月 -->

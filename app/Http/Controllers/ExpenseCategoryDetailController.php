@@ -339,6 +339,7 @@ class ExpenseCategoryDetailController extends Controller
             'incomeSum' => $incomeSum,
             'incomeAndExpense' => $incomeAndExpense,
             'temperature' => $temperature,
+            'currentDate' => $currentDate
         ]);
     }
 

@@ -38,17 +38,19 @@
             </div>
         </div>
     </div>
-    <div class="card-container" style="display: flex; flex-wrap: wrap;">
-        @for($i = 0; $i < count($temperature); $i++ )
-        <div class="card" style="width: 6rem; heigh: 6rem;">
-            <img src="{{ $temperature[$i]['day']['condition']['icon'] }}" alt="" style="width: 2rem; height: 2rem">
-            <div class="card-body">
-                <p class="card-text temperature-date">{{ $temperature[$i]['date'] }}</p>
-                <label for="" style="font-size: 14px">降水確率</label>
-                <p class="card-text">{{ $temperature[$i]['day']['daily_chance_of_rain']}}%</p>
+    <div class="card-container">
+        <div class="row">
+            @for($i = 0; $i < count($temperature); $i++ )
+            <div class="card col" style="width: 6rem; heigh: 6rem;">
+                <img src="{{ $temperature[$i]['day']['condition']['icon'] }}" alt="" style="width: 2rem; height: 2rem">
+                <div class="card-body">
+                    <p class="card-text temperature-date">{{ $temperature[$i]['date'] }}</p>
+                    <label for="" style="font-size: 14px">降水確率</label>
+                    <p class="card-text">{{ $temperature[$i]['day']['daily_chance_of_rain']}}%</p>
+                </div>
             </div>
+            @endfor
         </div>
-        @endfor
     </div>
     <!-- カレンダー -->
     <div class="container calendar">

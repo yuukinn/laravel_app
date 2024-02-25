@@ -15,12 +15,20 @@ use Carbon\Carbon;
 class CategoryController extends Controller
 {
     //
-    public function create(): View
+    public function create(Request $request): View
     {
+        $currentDateFormatted = NULL;
+        $date = $request->date;
+        
+        if ($date) {
+            $currentDateFormatted = $date;
+        } else {
+            $currentDate = Carbon::now();
+            $currentDateFormatted = $currentDate->format('Y-m-d');
+        }
+
         $categories = ExpenseCategory::all();
 
-        $currentDate = Carbon::now();
-        $currentDateFormatted = $currentDate->format('Y-m-d');
 
         $user = Auth::user();
         $categories = $user->expenseCategory;

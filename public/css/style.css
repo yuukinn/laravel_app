@@ -105,6 +105,11 @@
     font-size: 15px;
 }
 
+.cal-date {
+    text-decoration: none;
+    color: black;
+}
+
 /* footer */
 footer {
     background-color: #e7e7e7; 

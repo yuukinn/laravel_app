@@ -39,7 +39,7 @@ Route::prefix('expense/create')
      ->name('expense.')
      ->controller(CategoryController::class)
      ->group(function () {
-          Route::get('', 'create')->name('create');
+          Route::get('{date?}', 'create')->name('create');
           Route::post('', 'store')->name('store');
      });
 

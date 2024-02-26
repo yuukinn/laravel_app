@@ -325,7 +325,7 @@ class ExpenseCategoryDetailController extends Controller
         // 収支
         $incomeAndExpense = $incomeSum - $sum;
 
-        $apiKey = 'e0e333cb6ffb4623a4a111748241402';
+       
         $city = 'Osaka'; // 例: Tokyo
         $lang = 'ja';
 

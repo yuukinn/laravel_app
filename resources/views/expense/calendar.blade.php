@@ -157,10 +157,10 @@
                         continue;
                     }
                     
-                    var url = "{{ route('expense.create', ['date' => ':date']) }}";
-                        url = url.replace(':date', startOfMonth.getFullYear() + "-" + checkMonth(startOfMonth.getMonth()) + "-" + startOfMonth.getDate());
+                    let url = "{{ route('expense.create', ['date' => ':date']) }}";
+                        url = url.replace(':date', startOfMonth.getFullYear() + "-" + checkMonth(startOfMonth.getMonth() + 1) + "-" + startOfMonth.getDate());
                         console.log(url);
-                        console.log(startOfMonth);
+                        console.log(startOfMonth.getMonth());
                     if (startOfMonth.getYear() == dt.getYear() && startOfMonth.getMonth() == dt.getMonth() && startOfMonth.getDate() == dt.getDate()){
                         calendarHtml += '<td class="text-center calendar-col pe-1">' + '<p class="m-0 today-color">' + '<a class="cal-date" href="' + url + '">' + startOfMonth.getDate() + '<a>' +  '</p>' +
                                      checkDate(startOfMonth.toLocaleDateString("js-JP", {year: "numeric", month: "2-digit", day: "2-digit"}).replaceAll('/', '-'), data); +  

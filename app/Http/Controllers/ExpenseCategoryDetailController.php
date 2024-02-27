@@ -326,7 +326,8 @@ class ExpenseCategoryDetailController extends Controller
         $incomeAndExpense = $incomeSum - $sum;
 
        
-        $city = 'Osaka'; // 例: Tokyo
+        $apiKey = config('services.weather.key');
+        $city = 'Osaka';
         $lang = 'ja';
 
         $resp = Http::get("http://api.weatherapi.com/v1/forecast.json?key={$apiKey}&q={$city}&lang={$lang}&&days=7");

@@ -13,15 +13,15 @@
     <x-layouts.expense-manager>
         <div class="my-3">
             <div class="d-flex justify-content-evenly">
-                <h2>
-                    <p class="item mb-0 text-center">収入</p>
+                <h2 class="text-primary">
+                    <p class="item mb-0 text-center" style="color:black">収入</p>
                     {{ "￥" .number_format($incomeSum) }}
                 </h2>
                 <h2 class="d-flex align-items-center pt-3">
                     -
                 </h2>
-                <h2>
-                    <p class="item mb-0 text-center">支出</p>
+                <h2 class="text-danger">
+                    <p class="item mb-0 text-center" style="color:black">支出</p>
                     {{ "￥" .number_format($sum) }}
                 </h2>
                 <h2 class="d-flex align-items-center pt-3">
@@ -29,12 +29,12 @@
                 </h2>
                 @if($incomeAndExpense > 0)
                 <h2 class="text-primary">
-                        <p class="item mb-0 text-center">収支</p>
+                        <p class="item mb-0 text-center" style="color:black">収支</p>
                         {{ "￥" . number_format($incomeAndExpense) }}
                 </h2>
                 @else
                 <h2 class="text-danger">
-                        <p class="item mb-0 text-center">収支</p>
+                        <p class="item mb-0 text-center" style="color:black">収支</p>
                         {{ "￥" . number_format($incomeAndExpense) }}
                 </h2>
                 @endif

@@ -23,14 +23,14 @@
         <div class="d-flex justify-content-evenly">
             <div>
                 <p class="item mb-0 text-center">収入</p>
-                <h3 class="income"></h3>
+                <h3 class="income text-primary"></h3>
             </div>
             <div class="d-flex align-items-center pt-3">
                 <h3>-</h3>
             </div>
             <div>
                 <p class="item mb-0 text-center">支出</p>
-                <h3 class="expense"></h3>
+                <h3 class="expense text-danger"></h3>
             </div>
             <div class="d-flex align-items-center pt-3">
                 <h3 >=</h3>

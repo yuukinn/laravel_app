@@ -9,15 +9,15 @@ use App\Models\ExpenseCategoryDetail;
 
 class ExpenseCategoryCard extends Component
 {
-    public ExpenseCategoryDetail $categoryDetail;
+    public ExpenseCategoryDetail $expenseDetail;
     public $class;
     /**
      * Create a new component instance.
      */
-    public function __construct(ExpenseCategoryDetail $categoryDetail, $class)
+    public function __construct(ExpenseCategoryDetail $expenseDetail, $class)
     {
         //
-        $this->categoryDetail = $categoryDetail;
+        $this->expenseDetail = $expenseDetail;
         $this->class = $class;
     }
 

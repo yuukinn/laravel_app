@@ -22,19 +22,18 @@ class ExpenseCategoryDetailController extends Controller
     public function getCategoryDetails($type=null,$year=null, $month=null, $targetMonth=null):View|RedirectResponse
     {
         // 並び替え定数
-        $date_type = "date_asc";
-        $amount_type = "amount_asc";
-        
+        $date_type = config('constants.DATE_ASC');
+        $amount_type = config('constants.AMOUNT_ASC');
 
-        // 年月日を取得
+        // 現在の年月日を取得
         $currentDate = Carbon::now();
+        $currentYear = $currentDate->year;
+        $currentMonth = $currentDate->month;
+
         $startOfMonth = $currentDate->copy()->startOfMonth()->format('Y-m-d');
         $endOfMonth = $currentDate->copy()->endOfMonth()->format('Y-m-d');
         $yearMonth = $currentDate->copy()->format('Y-m');
 
-        //　現在の年月取得
-        $currentYear = $currentDate->year;
-        $currentMonth = $currentDate->month;
 
         // 年月の設定
         if($year==null){
@@ -81,55 +80,43 @@ class ExpenseCategoryDetailController extends Controller
 
         //カテゴリ詳細一覧を取得
         switch($type) {
-            case 'date_asc';
-                $date_type = "date_desc";
-                $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                    ->where([
-                        ['user_id', $userID],
-                    ])
-                    ->whereBetween('date', [$startOfMonth, $endOfMonth])
-                    ->orderBy('created_at', 'asc')
-                    ->paginate(10);
-
+            case config('constants.DATE_ASC'):
+                $date_type = config('constants.DATE_DESC');
+                $orderByColumn = 'date';
+                $orderByDirection = 'asc';
                 break;
 
-            case 'date_desc';
-                $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                    ->where([
-                        ['user_id', $userID]
-                    ])
-                    ->whereBetween('date', [$startOfMonth, $endOfMonth])
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(10);
+            case config('constants.DATE_DESC'):
+                $orderByColumn = 'date';
+                $orderByDirection = 'desc';
                 break; 
 
-            case 'amount_asc';
-                $amount_type = "amount_desc";
-                $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                    ->where([
-                        ['user_id', $userID],
-                    ])
-                    ->whereBetween('date', [$startOfMonth, $endOfMonth])// var_dump($startOfMonth . " " . $endOfMonth);
-                    ->orderBy('amount', 'asc')
-                    ->paginate(10);
+            case config('constants.AMOUNT_ASC'):
+                $amount_type = config('constants.AMOUNT_ASC');
+                $orderByColumn = 'amount';
+                $orderByDirection = 'asc';
                 break;
 
-            case 'amount_desc';
-                $amount_type = "amount_asc";
-                $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                    ->where('user_id', $userID)
-                    ->whereBetween('date', [$startOfMonth, $endOfMonth])
-                    ->orderBy('amount', 'desc')
-                    ->paginate(10);
+            case config('constants.AMOUNT_DESC'):
+                $amount_type = config('constants.AMOUNT_DESC');
+                $orderByColumn = 'amount';
+                $orderByDirection = 'desc';
                 break;
             
             default:
-                $categoryDetails = ExpenseCategoryDetail::with('expenseCategory')
-                ->where('user_id', $userID)
-                ->whereBetween('date', [$startOfMonth, $endOfMonth])
-                ->orderBy('date', 'desc')
-                ->paginate(10);
+                $orderByColumn = 'date';
+                $orderByDirection = 'desc';
         }
+
+        // dd($endOfMonth);
+
+        // 支出詳細
+        $expenseDetails = ExpenseCategoryDetail::with('expenseCategory')
+            ->where('user_id', $userID)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->orderBy($orderByColumn, $orderByDirection)
+            ->paginate(10);
+        // dd($expenseDetails);
 
         // 支出合計処理
         $sum = ExpenseCategoryDetail::where('user_id', $userID)
@@ -145,7 +132,7 @@ class ExpenseCategoryDetailController extends Controller
         $incomeAndExpense = $incomeSum - $sum;
 
         return view('expense/index', [
-            'categoryDetails' => $categoryDetails,
+            'expenseDetails' => $expenseDetails,
             'sum' => $sum,
             'userID'=> $userID,
             'yearMonth' => $yearMonth,

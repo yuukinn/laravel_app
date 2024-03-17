@@ -62,21 +62,21 @@
                 {{ session('message') }}
             </div>
         @endif
-        @if($categoryDetails->isNotEmpty())
-        @foreach($categoryDetails as $categoryDetail)
-            @if($categoryDetail->is_investment)
-                <x-expense-category-card :categoryDetail="$categoryDetail" class="investment-color"/>
-            @elseif($categoryDetail->is_consumption)
-                <x-expense-category-card :categoryDetail="$categoryDetail" class="consumption-color"/>
-            @else
-                <x-expense-category-card :categoryDetail="$categoryDetail" class="waste-color"/>
-            @endif
-        @endforeach
+        @if($expenseDetails->isNotEmpty())
+            @foreach($expenseDetails as $expenseDetail)
+                @if($expenseDetail->is_investment)
+                    <x-expense-category-card :expenseDetail="$expenseDetail" class="investment-color"/>
+                @elseif($expenseDetail->is_consumption)
+                    <x-expense-category-card :expenseDetail="$expenseDetail" class="consumption-color"/>
+                @else
+                    <x-expense-category-card :expenseDetail="$expenseDetail" class="waste-color"/>
+                @endif
+            @endforeach
         @else
             <p class="d-flex justify-content-center align-items-center" style="min-height: 60vh;">no data</p>
         @endif
         <div>
-            {{ $categoryDetails->withQueryString()->links()}}
+            {{ $expenseDetails->withQueryString()->links()}}
         </div>
 
     </x-layouts.expense-manager>
